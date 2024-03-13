@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToMongoDb.Import", "CsvToMongoDb.Import\CsvToMongoDb.Import.csproj", "{5E2B02E9-063F-468A-B012-A04C6528BF56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToMongoDb.Import.Test", "CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj", "{5C2E0C6D-E1D4-4F7A-8075-B516BD31B882}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5E2B02E9-063F-468A-B012-A04C6528BF56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E2B02E9-063F-468A-B012-A04C6528BF56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E2B02E9-063F-468A-B012-A04C6528BF56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E2B02E9-063F-468A-B012-A04C6528BF56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C2E0C6D-E1D4-4F7A-8075-B516BD31B882}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C2E0C6D-E1D4-4F7A-8075-B516BD31B882}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C2E0C6D-E1D4-4F7A-8075-B516BD31B882}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C2E0C6D-E1D4-4F7A-8075-B516BD31B882}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
