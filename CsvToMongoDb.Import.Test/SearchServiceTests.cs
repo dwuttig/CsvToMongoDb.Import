@@ -78,4 +78,21 @@ public class SearchServiceTests
         parameter.Value.ShouldBe("0");
         parameter.Unit.ShouldBeEmpty();
     }
+    
+    [Test]
+    public void GetAllParameters()
+    {
+        // Arrange
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (08_06_2019).csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (09_08_2017) LCI535.csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (11_05_2022).csv");
+
+        // Act
+        var result = _searchService.GetAllParameters();
+
+        // Assert
+        result.Count().ShouldBe(18188);
+        result.ShouldContain("AngleOffsetPulseMode_102");
+    }
 }

@@ -36,13 +36,27 @@ public class ImportServiceTests
     {
         // Arrange
 
-        // Act
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (08_06_2019).csv");
 
-        // Assert
-        // Add assertions to check if data was imported correctly
+        //Act
         var results = _searchService.SearchEverywhere(new[] { "1081" }, new[] { "FirmwareVersionLIN7_000" });
+
+        // Assert
         results.Count.ShouldBe(1);
+    }
+
+    [Test]
+    public void GetMachineIds()
+    {
+        // Arrange
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (08_06_2019).csv");
+
+        // Act
+        var results = _searchService.GetAllMachineIds();
+        
+        // Assert
+        results.Count().ShouldBe(2);
     }
 }

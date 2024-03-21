@@ -15,6 +15,28 @@ public class SearchService : ISearchService
         _logger = logger;
     }
 
+    public IEnumerable<string> GetAllMachineIds()
+    {
+        return _database.ListCollectionNames().ToList();
+    }
+    
+    public IEnumerable<string> GetAllParameters()
+    {
+        var collections = _database.ListCollectionNames().ToList();
+
+        IList<string> parameters = new List<string>();
+        foreach (var collectionName in collections)
+        {
+            var collection = _database.GetCollection<BsonDocument>(collectionName);
+            foreach (var parameter in collection.Distinct<string>("Name", new BsonDocument()).ToList())
+            {
+                parameters.Add(parameter);
+            }
+        }
+        
+        return parameters;
+    }
+
     public List<SearchResult> SearchEverywhere(string[] blockNr, params string[] returnFields)
     {
         var collections = _database.ListCollectionNames().ToList().Where(c=>blockNr.Contains(c));

@@ -11,8 +11,10 @@ public record Parameter
     }
 
     public string Name { get; }
+
     public string Value { get; }
-    
+
     public string QualifiedName { get; }
+
     public string Unit { get; }
 }
