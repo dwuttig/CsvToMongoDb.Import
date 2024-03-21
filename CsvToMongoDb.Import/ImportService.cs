@@ -6,13 +6,11 @@ namespace CsvToMongoDb.Import
 {
     public class ImportService : IImportService
     {
-        private readonly ILogger<ImportService> _logger;
         private IMongoDatabase _database;
 
-        public ImportService(MongoClient mongoClient, string dataBaseName, ILogger<ImportService> logger)
+        public ImportService(MongoClient mongoClient, string dataBaseName)
         {
             _database = mongoClient.GetDatabase(dataBaseName);
-            _logger = logger;
         }
 
         public void ImportCsvData(string csvFilePath)
@@ -49,7 +47,6 @@ namespace CsvToMongoDb.Import
 
             var blockNr = SearchBlockNr("Name", "BlockNr", collection);
             _database.RenameCollection(collectionName, blockNr, new RenameCollectionOptions() { DropTarget = true });
-            _logger.LogInformation($"CSV data imported for BlockNr {blockNr} into MongoDB successfully.");
         }
 
         private static string SearchBlockNr(string field, string value, IMongoCollection<BsonDocument> collection)
