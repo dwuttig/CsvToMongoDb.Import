@@ -30,65 +30,52 @@ public class SearchServiceTests
     public void Search_ValidInput_ReturnsResults()
     {
         // Arrange
-        _importService.ImportCsvData("Resources/positive_test_data.csv");
-        _importService.ImportCsvData("Resources/positive_test_data2.csv");
-        var field = "P1";
-        var value = "5";
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (08_06_2019).csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (09_08_2017) LCI535.csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (11_05_2022).csv");
 
         // Act
-        var result = _searchService.SearchEverywhere(field, value);
+        var parameterRequested = "FirmwareVersionLIN7_000";
+        var result = _searchService.SearchEverywhere(new string[] { "1081" }, new[] { parameterRequested });
 
         // Assert
-        result.Count.ShouldBe(2);
+        result.Count.ShouldBe(1);
+        var searchResult = result.First();
+        searchResult.Name.ShouldBe("1081");
+        searchResult.Parameters.Count.ShouldBe(1);
+        var parameter = searchResult.Parameters.First();
+        parameter.Name.ShouldBe(parameterRequested);
+        parameter.Unit.ShouldBeEmpty();
+        parameter.QualifiedName.ShouldBe("12608");
+        parameter.Value.ShouldBe("0");
+        parameter.Unit.ShouldBeEmpty();
     }
-
+    
     [Test]
-    public void Search_ValidInput_ReturnsMultipleResults()
+    public void Search_ValidInput_QueryMultipleParameters()
     {
         // Arrange
-        _importService.ImportCsvData("Resources/positive_test_data.csv");
-        _importService.ImportCsvData("Resources/positive_test_data2.csv");
-        var field = "P3";
-        var value = "4";
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (08_06_2019).csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (09_08_2017) LCI535.csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (11_05_2022).csv");
 
         // Act
-        var result = _searchService.SearchEverywhere(field, value);
+        var parameterRequested = "FirmwareVersionLIN7_000";
+        var parameterRequested2 = "AngleOffsetPulseMode_104";
+        var result = _searchService.SearchEverywhere(new string[] { "1081" }, new[] { parameterRequested, parameterRequested2 });
 
         // Assert
-        result.Count.ShouldBe(5);
-    }
-
-    [Test]
-    public void Search_ValidInput_ReturnsMultipleCollectionResults()
-    {
-        // Arrange
-        _importService.ImportCsvDataInNewCollection("Resources/positive_test_data.csv");
-        _importService.ImportCsvDataInNewCollection("Resources/positive_test_data2.csv");
-        var field = "P1";
-        var value = "3";
-
-        // Act
-        var result = _searchService.SearchEverywhere(field, value);
-
-        // Assert
-        result.Count.ShouldBe(2);
-        result.ShouldContain(r => r.Name.Equals("positive_test_data.csv"));
-        result.ShouldContain(r => r.Name.Equals("positive_test_data2.csv"));
-    }
-
-    [Test]
-    public void Search_ValidInput_ReturnsNoResults()
-    {
-        // Arrange
-        _importService.ImportCsvData("Resources/positive_test_data.csv");
-        _importService.ImportCsvData("Resources/positive_test_data2.csv");
-        var field = "P1";
-        var value = "11";
-
-        // Act
-        var result = _searchService.SearchEverywhere(field, value);
-
-        // Assert
-        result.Count.ShouldBe(0);
+        result.Count.ShouldBe(1);
+        var searchResult = result.First();
+        searchResult.Name.ShouldBe("1081");
+        searchResult.Parameters.Count.ShouldBe(2);
+        var parameter = searchResult.Parameters.First();
+        parameter.Name.ShouldBe(parameterRequested);
+        parameter.Unit.ShouldBeEmpty();
+        parameter.QualifiedName.ShouldBe("12608");
+        parameter.Value.ShouldBe("0");
+        parameter.Unit.ShouldBeEmpty();
     }
 }

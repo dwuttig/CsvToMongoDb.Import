@@ -15,52 +15,37 @@ public class SearchService : ISearchService
         _logger = logger;
     }
 
-    private List<BsonDocument> Search(string field, string value, IMongoCollection<BsonDocument> collection)
+    public List<SearchResult> SearchEverywhere(string[] blockNr, params string[] returnFields)
     {
-        var filter = Builders<BsonDocument>.Filter.Eq(field, value);
+        var collections = _database.ListCollectionNames().ToList().Where(c=>blockNr.Contains(c));
+        List<SearchResult> result = new List<SearchResult>();
+
+        foreach (var collectionName in collections)
+        {
+            var collection = _database.GetCollection<BsonDocument>(collectionName);
+            IList<Parameter> parameters = new List<Parameter>();
+            foreach (var returnField in returnFields)
+            {
+                var paramResult = Search(returnField, collection);
+                var value = paramResult.Select(d => d["Value"]).First().AsString;
+                var qualifiedName = paramResult.Select(d => d["Qualified Name"]).First().AsString;
+                var unit = paramResult.Select(d => d["Unit"]).First().AsString;
+                parameters.Add(new Parameter(returnField, qualifiedName, value, unit));
+            }
+
+            result.Add(new SearchResult(collectionName, parameters));
+        }
+        
+        return result;
+    }
+
+    private List<BsonDocument> Search(string value, IMongoCollection<BsonDocument> collection)
+    {
+        var filter = Builders<BsonDocument>.Filter.Eq("Name", value);
         var find = collection.Find(filter);
         var results = find.ToList();
 
-        _logger.LogInformation($"Search results for {field} = {value}:");
+        _logger.LogInformation($"Search results for parameter = {value}:");
         return results;
     }
-
-    public List<SearchResult> SearchEverywhere(string searchField, string searchValue)
-    {
-        var collections = _database.ListCollectionNames().ToList();
-        List<SearchResult> result = new List<SearchResult>();
-
-        foreach (var collectionName in collections)
-        {
-            var collection = _database.GetCollection<BsonDocument>(collectionName);
-            result.AddRange(Search(searchField, searchValue, collection).Select(r => new SearchResult(collectionName)));
-        }
-
-        _logger.LogInformation($"Search results for {searchField} = {searchValue}: {result.Count}");
-        return result;
-    }
-
-    public List<SearchResult> GetAll()
-    {
-        var collections = _database.ListCollectionNames().ToList();
-        List<SearchResult> result = new List<SearchResult>();
-
-        foreach (var collectionName in collections)
-        {
-            var collection = _database.GetCollection<BsonDocument>(collectionName);
-            result.AddRange(collection.Find(FilterDefinition<BsonDocument>.Empty).ToList().Select(r => new SearchResult(collectionName)));
-        }
-
-        return result;
-    }
-}
-
-public record SearchResult
-{
-    public SearchResult(string name)
-    {
-        Name = name;
-    }
-
-    public string Name { get; }
 }

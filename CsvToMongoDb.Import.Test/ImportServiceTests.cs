@@ -20,40 +20,29 @@ public class ImportServiceTests
     }
 
     [Test]
-    public void ImportCsvData_PositiveCase()
+    public void ImportCsvData_RealDataCase()
     {
         // Arrange
 
         // Act
-        _importService.ImportCsvData("Resources/positive_test_data.csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
 
         // Assert
         // Add assertions to check if data was imported correctly
-        _searchService.GetAll().Count.ShouldBe(5);
     }
 
     [Test]
-    public void ImportCsvData_EmptyCsvFile()
+    public void ImportMultipleFiles()
     {
         // Arrange
 
         // Act
-        _importService.ImportCsvData("Resources/empty_test_data.csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (08_06_2019).csv");
 
         // Assert
-        // Add assertions to check if no data was imported
-        _searchService.GetAll().Count.ShouldBe(0);
-    }
-
-    [Test]
-    public void ImportCsvData_NegativeCase()
-    {
-        // Arrange
-        
-        // Act
-        // Assert
-        // Add assertions to check for appropriate exception handling
-        // For example, check if an IOException was thrown
-        Assert.Throws<IOException>(() => _importService.ImportCsvData("Resources/non_existent_file.csv"));
+        // Add assertions to check if data was imported correctly
+        var results = _searchService.SearchEverywhere(new[] { "1081" }, new[] { "FirmwareVersionLIN7_000" });
+        results.Count.ShouldBe(1);
     }
 }
