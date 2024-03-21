@@ -4,6 +4,8 @@ using CsvToMongoDb.Import;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
+namespace CsvToMongoDb.FileWatcher;
+
 internal class Program
 {
     private static ImportService _importService;
@@ -18,11 +20,16 @@ internal class Program
 
         _importService = new ImportService(new MongoClient(_configuration["mongoDbClient"]), _configuration["mongoDbName"]);
 
+        foreach (var file in Directory.GetFiles(_configuration["WatchPath"], "*.csv"))
+        {
+            ImportFile(file);
+        }
+
         var watcher = new FileSystemWatcher(watchPath);
-        watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+        watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
         // Only watch text files.
-        watcher.Filter = "*.*";
+        watcher.Filter = "*.csv";
 
         // Add event handlers
         watcher.Created += OnCreated;
@@ -35,19 +42,51 @@ internal class Program
         {
         }
 
-        static void OnCreated(object source, FileSystemEventArgs e)
+        static void OnCreated(object source, FileSystemEventArgs eventArgs)
         {
+            var maxRetries = 10;
+            var retryDelayMs = 1000; // 1 second delay between retries
+
+            var retryCount = 0;
+            var fileAccessible = false;
             try
             {
-                _importService.ImportCsvData(e.FullPath);
-                File.Move(e.FullPath, Path.Combine(_configuration["ArchivePath"], e.Name), true);
-                Console.WriteLine($"{e.Name} imported.");
+                while (retryCount < maxRetries && !fileAccessible)
+                {
+                    try
+                    {
+                        var destFileName = Path.Combine(_configuration["TempPath"], eventArgs.Name);
+                        File.Copy(eventArgs.FullPath, destFileName, true);
+
+                        ImportFile(destFileName);
+                        File.Delete(eventArgs.FullPath);
+                        File.Delete(destFileName);
+                        fileAccessible = true;
+                    }
+                    catch (IOException ex)
+                    {
+                        Console.WriteLine($"Attempt {retryCount + 1}: File is not accessible - {ex.Message}");
+                        retryCount++;
+                        Thread.Sleep(retryDelayMs); // Wait before retrying
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
-                throw;
             }
         }
+    }
+
+    private static void ImportFile(string file)
+    {
+        var fileInfo = new FileInfo(file);
+        _importService.ImportCsvData(fileInfo.FullName);
+        File.Move(fileInfo.FullName, Path.Combine(_configuration["ArchivePath"], fileInfo.Name), true);
+        Console.WriteLine($"{fileInfo.Name} imported.");
     }
 }
