@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToMongoDb.Import.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToMongoDb.FileWatcher", "CsvToMongoDb.FileWatcher\CsvToMongoDb.FileWatcher.csproj", "{FFA0CB27-8550-4F00-BDB5-A7709926636D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToMongoDb.QueryClient", "CsvToMongoDb.QueryClient\CsvToMongoDb.QueryClient.csproj", "{E1D7F975-AD0F-46FA-8CF3-F0EBA6AEC58F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{FFA0CB27-8550-4F00-BDB5-A7709926636D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFA0CB27-8550-4F00-BDB5-A7709926636D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFA0CB27-8550-4F00-BDB5-A7709926636D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1D7F975-AD0F-46FA-8CF3-F0EBA6AEC58F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1D7F975-AD0F-46FA-8CF3-F0EBA6AEC58F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1D7F975-AD0F-46FA-8CF3-F0EBA6AEC58F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1D7F975-AD0F-46FA-8CF3-F0EBA6AEC58F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

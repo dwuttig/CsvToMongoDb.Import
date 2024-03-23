@@ -1,0 +1,17 @@
+﻿<Application x:Class="CsvToMongoDb.QueryClient.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CsvToMongoDb.QueryClient">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <local:Bootstrapper x:Key="Bootstrapper" />
+                </ResourceDictionary>
+
+            </ResourceDictionary.MergedDictionaries>
+            <Brush x:Key="WindowBackground">#3C3F41</Brush>
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>
