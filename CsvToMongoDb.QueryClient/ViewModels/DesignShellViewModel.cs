@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace CsvToMongoDb.QueryClient.ViewModels;
 
@@ -6,10 +7,10 @@ internal class DesignShellViewModel : IShellViewModel
 {
     public Task InitializeAsync()
     {
-        return Task.FromResult<>(null);
+        return Task.FromResult<Task>(null!);
     }
 
-    public ObservableCollection<ParameterViewModel> Parameters { get; set; } = new ObservableCollection<ParameterViewModel>() { new ParameterViewModel("Test") };
+    public CollectionViewSource Parameters { get; set; } = new CollectionViewSource();
 
     public ObservableCollection<string> MachineIds { get; set; } = new ObservableCollection<string>() { "test" };
 

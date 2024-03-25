@@ -28,12 +28,12 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Margin="8">
+    <Grid Margin="4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <DockPanel>
+        <DockPanel Margin="4">
             <Label Content="MachineID:"
                    DockPanel.Dock="Top">
             </Label>
@@ -44,17 +44,18 @@
             <Label Content="Parameters:"
                    DockPanel.Dock="Top">
             </Label>
+            <TextBox Text="{Binding ParameterFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"></TextBox>
             <Button Content="Search" DockPanel.Dock="Bottom"></Button>
-            <ListView ItemsSource="{Binding Parameters}"
+            <ListView ItemsSource="{Binding Parameters.View}"
                       DockPanel.Dock="Top">
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type viewModels:ParameterViewModel}">
-                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected, Mode=OneWayToSource}"></CheckBox>
+                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected, Mode=TwoWay}"></CheckBox>
                     </DataTemplate>
                 </ListView.Resources>
             </ListView>
         </DockPanel>
-        <DataGrid Grid.Column="1" Background="{StaticResource WindowBackground}"
+        <DataGrid Margin="8" Grid.Column="1" Background="{StaticResource WindowBackground}"
                   ItemsSource="{Binding Results}" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"></DataGridTextColumn>

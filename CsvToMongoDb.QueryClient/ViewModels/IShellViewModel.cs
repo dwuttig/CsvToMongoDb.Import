@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace CsvToMongoDb.QueryClient.ViewModels;
 
@@ -6,7 +7,7 @@ public interface IShellViewModel
 {
     Task InitializeAsync();
 
-    ObservableCollection<ParameterViewModel> Parameters { get; set; }
+    CollectionViewSource Parameters { get; set; }
 
     ObservableCollection<string> MachineIds { get; set; }
 
