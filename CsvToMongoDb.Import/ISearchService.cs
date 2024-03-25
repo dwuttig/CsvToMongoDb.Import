@@ -2,9 +2,9 @@ namespace CsvToMongoDb.Import;
 
 public interface ISearchService
 {
-    List<SearchResult> SearchEverywhere(string[] blockNr, params string[] returnFields);
+    Task<List<SearchResult>> SearchEverywhereAsync(string?[] blockNr, params string[] returnFields);
 
-    IEnumerable<string> GetAllMachineIds();
+    Task<IEnumerable<string>> GetAllMachineIdsAsync();
 
-    IEnumerable<string> GetAllParameters();
+    Task<IEnumerable<string>> GetAllParametersByMachineIdAsync(string machineId);
 }

@@ -6,17 +6,17 @@ namespace CsvToMongoDb.Import;
 
 public class SearchService(IMongoDatabase mongoDatabase, ILogger<SearchService> logger) : ISearchService
 {
-    public IEnumerable<string> GetAllMachineIds()
+    public async Task<IEnumerable<string>> GetAllMachineIdsAsync()
     {
-        return mongoDatabase.ListCollectionNames().ToList();
+        return await (await mongoDatabase.ListCollectionNamesAsync().ConfigureAwait(false)).ToListAsync();
     }
-    
-    public IEnumerable<string> GetAllParameters()
+
+    public async Task<IEnumerable<string>> GetAllParametersByMachineIdAsync(string machineId)
     {
-        var collections = mongoDatabase.ListCollectionNames().ToList();
+        var collections = await (await mongoDatabase.ListCollectionNamesAsync()).ToListAsync().ConfigureAwait(false);
 
         IList<string> parameters = new List<string>();
-        foreach (var collectionName in collections)
+        foreach (var collectionName in collections.Where(c => c == machineId))
         {
             var collection = mongoDatabase.GetCollection<BsonDocument>(collectionName);
             foreach (var parameter in collection.Distinct<string>("Name", new BsonDocument()).ToList())
@@ -24,13 +24,14 @@ public class SearchService(IMongoDatabase mongoDatabase, ILogger<SearchService> 
                 parameters.Add(parameter);
             }
         }
-        
+
         return parameters;
     }
 
-    public List<SearchResult> SearchEverywhere(string[] blockNr, params string[] returnFields)
+    public async Task<List<SearchResult>> SearchEverywhereAsync(string?[] blockNr, params string[] returnFields)
     {
-        var collections = mongoDatabase.ListCollectionNames().ToList().Where(c=>blockNr.Contains(c));
+        var collectionNamesAsync = await mongoDatabase.ListCollectionNamesAsync();
+        var collections = (await collectionNamesAsync.ToListAsync()).Where(c => blockNr.Contains(c));
         List<SearchResult> result = new List<SearchResult>();
 
         foreach (var collectionName in collections)
@@ -48,7 +49,7 @@ public class SearchService(IMongoDatabase mongoDatabase, ILogger<SearchService> 
 
             result.Add(new SearchResult(collectionName, parameters));
         }
-        
+
         return result;
     }
 

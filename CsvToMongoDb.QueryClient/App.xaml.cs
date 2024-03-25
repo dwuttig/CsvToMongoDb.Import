@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
+using DispatcherPriority = System.Windows.Threading.DispatcherPriority;
 
 namespace CsvToMongoDb.QueryClient;
 
@@ -27,19 +28,19 @@ public partial class App : Application
             configurationBuilder
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
             var configuration = configurationBuilder.Build();
-                
-            
+
             // Register services
             Ioc.Default.ConfigureServices(
                 new ServiceCollection()
                     .AddLogging(builder => builder.AddLog4Net("Configuration/log4net.config"))
                     .AddSingleton<ISearchService, SearchService>()
                     .AddSingleton(typeof(IMongoDatabase), new MongoClient(configuration["MongoDbConnectionString"]).GetDatabase(configuration["MongoDbDatabase"]))
-                    .AddSingleton<IShellViewModel,ShellViewModel>()
+                    .AddSingleton<IShellViewModel, ShellViewModel>()
                     .BuildServiceProvider());
 
-            MainWindow.DataContext = Ioc.Default.GetService<IShellViewModel>();
-            
+            var shellViewModel = Ioc.Default.GetService<IShellViewModel>();
+            MainWindow.DataContext = shellViewModel;
+           Dispatcher.BeginInvoke(DispatcherPriority.Background , new Action(() => shellViewModel.InitializeAsync().ConfigureAwait(true)));
             MainWindow.Show();
         }
     }

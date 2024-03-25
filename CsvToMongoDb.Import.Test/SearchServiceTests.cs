@@ -28,7 +28,7 @@ public class SearchServiceTests
     }
 
     [Test]
-    public void Search_ValidInput_ReturnsResults()
+    public async Task Search_ValidInput_ReturnsResults()
     {
         // Arrange
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
@@ -38,7 +38,7 @@ public class SearchServiceTests
 
         // Act
         var parameterRequested = "FirmwareVersionLIN7_000";
-        var result = _searchService.SearchEverywhere(new string[] { "1081" }, new[] { parameterRequested });
+        var result = await _searchService.SearchEverywhereAsync(new string[] { "1081" }, new[] { parameterRequested }).ConfigureAwait(false);
 
         // Assert
         result.Count.ShouldBe(1);
@@ -52,9 +52,9 @@ public class SearchServiceTests
         parameter.Value.ShouldBe("0");
         parameter.Unit.ShouldBeEmpty();
     }
-    
+
     [Test]
-    public void Search_ValidInput_QueryMultipleParameters()
+    public async Task Search_ValidInput_QueryMultipleParameters()
     {
         // Arrange
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
@@ -65,7 +65,7 @@ public class SearchServiceTests
         // Act
         var parameterRequested = "FirmwareVersionLIN7_000";
         var parameterRequested2 = "AngleOffsetPulseMode_104";
-        var result = _searchService.SearchEverywhere(new string[] { "1081" }, new[] { parameterRequested, parameterRequested2 });
+        var result = await _searchService.SearchEverywhereAsync(new string[] { "1081" }, new[] { parameterRequested, parameterRequested2 }).ConfigureAwait(false);
 
         // Assert
         result.Count.ShouldBe(1);
@@ -79,9 +79,9 @@ public class SearchServiceTests
         parameter.Value.ShouldBe("0");
         parameter.Unit.ShouldBeEmpty();
     }
-    
+
     [Test]
-    public void GetAllParameters()
+    public async Task GetAllParameters()
     {
         // Arrange
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
@@ -90,15 +90,15 @@ public class SearchServiceTests
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (11_05_2022).csv");
 
         // Act
-        var result = _searchService.GetAllParameters().ToList();
+        var result = (await _searchService.GetAllParametersByMachineIdAsync("1243").ConfigureAwait(false)).ToList();
 
         // Assert
         result.Count().ShouldBe(18188);
         result.ShouldContain("AngleOffsetPulseMode_102");
     }
-    
+
     [Test]
-    public void GetAllMachineIds()
+    public async Task GetAllMachineIds()
     {
         // Arrange
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
@@ -107,7 +107,7 @@ public class SearchServiceTests
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (11_05_2022).csv");
 
         // Act
-        var result = _searchService.GetAllMachineIds().ToList();
+        var result = (await _searchService.GetAllMachineIdsAsync().ConfigureAwait(false)).ToList();
 
         // Assert
         result.Count().ShouldBe(4);

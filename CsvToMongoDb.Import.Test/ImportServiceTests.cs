@@ -32,7 +32,7 @@ public class ImportServiceTests
     }
 
     [Test]
-    public void ImportMultipleFiles()
+    public async Task ImportMultipleFiles()
     {
         // Arrange
 
@@ -40,21 +40,21 @@ public class ImportServiceTests
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (08_06_2019).csv");
 
         //Act
-        var results = _searchService.SearchEverywhere(new[] { "1081" }, new[] { "FirmwareVersionLIN7_000" });
+        var results = await _searchService.SearchEverywhereAsync(new[] { "1081" }, new[] { "FirmwareVersionLIN7_000" }).ConfigureAwait(false);
 
         // Assert
         results.Count.ShouldBe(1);
     }
 
     [Test]
-    public void GetMachineIds()
+    public async Task GetMachineIds()
     {
         // Arrange
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (08_06_2019).csv");
 
         // Act
-        var results = _searchService.GetAllMachineIds();
+        var results = await _searchService.GetAllMachineIdsAsync().ConfigureAwait(false);
         
         // Assert
         results.Count().ShouldBe(2);
