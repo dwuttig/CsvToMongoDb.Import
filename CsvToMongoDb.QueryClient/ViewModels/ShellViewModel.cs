@@ -1,10 +1,9 @@
-using Caliburn.Micro;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CsvToMongoDb.Import;
-using CsvToMongoDb.QueryClient.ViewModel;
 
 namespace CsvToMongoDb.QueryClient.ViewModels;
 
-public class ShellViewModel : Screen, IShellViewModel
+public class ShellViewModel : ObservableObject, IShellViewModel
 {
     private readonly ISearchService _searchService;
 

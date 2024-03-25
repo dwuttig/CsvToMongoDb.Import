@@ -1,8 +1,8 @@
-using Caliburn.Micro;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace CsvToMongoDb.QueryClient.ViewModel;
+namespace CsvToMongoDb.QueryClient.ViewModels;
 
-public class ParameterViewModel : Screen, IParameterViewModel
+public class ParameterViewModel : ObservableObject, IParameterViewModel
 {
     public bool IsSelected { get; set; }
 

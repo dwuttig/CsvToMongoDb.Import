@@ -16,7 +16,8 @@ public class SearchServiceTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _searchService = new SearchService(new MongoClient("mongodb://localhost:27017"), "testDB", Mock.Of<ILogger<SearchService>>());
+        MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
+        _searchService = new SearchService(mongoClient.GetDatabase("testDB"), Mock.Of<ILogger<SearchService>>());
         _cleanupService.DeleteAllAsync();
     }
 

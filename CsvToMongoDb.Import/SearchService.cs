@@ -4,30 +4,21 @@ using MongoDB.Driver;
 
 namespace CsvToMongoDb.Import;
 
-public class SearchService : ISearchService
+public class SearchService(IMongoDatabase mongoDatabase, ILogger<SearchService> logger) : ISearchService
 {
-    private readonly ILogger<SearchService> _logger;
-    private IMongoDatabase _database;
-
-    public SearchService(MongoClient mongoClient, string dataBaseName, ILogger<SearchService> logger)
-    {
-        _database = mongoClient.GetDatabase(dataBaseName);
-        _logger = logger;
-    }
-
     public IEnumerable<string> GetAllMachineIds()
     {
-        return _database.ListCollectionNames().ToList();
+        return mongoDatabase.ListCollectionNames().ToList();
     }
     
     public IEnumerable<string> GetAllParameters()
     {
-        var collections = _database.ListCollectionNames().ToList();
+        var collections = mongoDatabase.ListCollectionNames().ToList();
 
         IList<string> parameters = new List<string>();
         foreach (var collectionName in collections)
         {
-            var collection = _database.GetCollection<BsonDocument>(collectionName);
+            var collection = mongoDatabase.GetCollection<BsonDocument>(collectionName);
             foreach (var parameter in collection.Distinct<string>("Name", new BsonDocument()).ToList())
             {
                 parameters.Add(parameter);
@@ -39,12 +30,12 @@ public class SearchService : ISearchService
 
     public List<SearchResult> SearchEverywhere(string[] blockNr, params string[] returnFields)
     {
-        var collections = _database.ListCollectionNames().ToList().Where(c=>blockNr.Contains(c));
+        var collections = mongoDatabase.ListCollectionNames().ToList().Where(c=>blockNr.Contains(c));
         List<SearchResult> result = new List<SearchResult>();
 
         foreach (var collectionName in collections)
         {
-            var collection = _database.GetCollection<BsonDocument>(collectionName);
+            var collection = mongoDatabase.GetCollection<BsonDocument>(collectionName);
             IList<Parameter> parameters = new List<Parameter>();
             foreach (var returnField in returnFields)
             {
@@ -67,7 +58,7 @@ public class SearchService : ISearchService
         var find = collection.Find(filter);
         var results = find.ToList();
 
-        _logger.LogInformation($"Search results for parameter = {value}:");
+        logger.LogInformation($"Search results for parameter = {value}:");
         return results;
     }
 }

@@ -1,4 +1,4 @@
-namespace CsvToMongoDb.QueryClient.ViewModel;
+namespace CsvToMongoDb.QueryClient.ViewModels;
 
 public interface IParameterViewModel
 {
