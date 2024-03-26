@@ -8,45 +8,26 @@ namespace CsvToMongoDb.QueryClient.ViewModels;
 
 public class ShellViewModel : ObservableObject, IShellViewModel
 {
-    private readonly ISearchService _searchService;
-    private string? _selectedMachineId;
 
-    private ObservableCollection<SearchResult>? _type;
-    private ObservableCollection<Parameter> _results = new ObservableCollection<Parameter>();
-    private string _parameterFilter;
-    private IList<ParameterViewModel> _parameters = new List<ParameterViewModel>();
     private CollectionViewSource _parametersViewSource = new CollectionViewSource();
+    private IList<ParameterViewModel> _parameters = new List<ParameterViewModel>();
+    private ObservableCollection<Parameter> _results = new ObservableCollection<Parameter>();
+    private readonly ISearchService _searchService;
+    private string? _parameterFilter;
+    private string? _selectedMachineId;
 
     public ObservableCollection<string> MachineIds { get; set; } = new ObservableCollection<string>();
 
     public CollectionViewSource Parameters
     {
         get => _parametersViewSource;
-        set
-        {
-            if (Equals(value, _parametersViewSource))
-            {
-                return;
-            }
-
-            _parametersViewSource = value;
-            OnPropertyChanged();
-        }
+        init => _parametersViewSource = value;
     }
 
     public ObservableCollection<Parameter> Results
     {
         get => _results;
-        set
-        {
-            if (Equals(value, _results))
-            {
-                return;
-            }
-
-            _results = value;
-            OnPropertyChanged();
-        }
+        init => _results = value;
     }
 
     public string? SelectedMachineId
@@ -54,29 +35,19 @@ public class ShellViewModel : ObservableObject, IShellViewModel
         get => _selectedMachineId;
         set
         {
-            if (value == _selectedMachineId)
+            if (SetProperty(ref _selectedMachineId, value))
             {
-                return;
+                Dispatcher.CurrentDispatcher.InvokeAsync(SearchResultsAsync);
             }
-
-            _selectedMachineId = value;
-            OnPropertyChanged();
         }
     }
 
-    public string ParameterFilter
+    public string? ParameterFilter
     {
         get => _parameterFilter;
         set
         {
-            if (value == _parameterFilter)
-            {
-                return;
-            }
-
-            _parameterFilter = value;
-            OnPropertyChanged();
-            if (Parameters != null)
+            if (SetProperty(ref _parameterFilter, value))
             {
                 Parameters.View?.Refresh();
             }
@@ -86,6 +57,8 @@ public class ShellViewModel : ObservableObject, IShellViewModel
     public ShellViewModel(ISearchService searchService)
     {
         _searchService = searchService;
+        Parameters = new CollectionViewSource { Source = _parameters };
+        Results = new ObservableCollection<Parameter>();
     }
 
     private void FilterParameters(object obj, FilterEventArgs e)
@@ -97,7 +70,6 @@ public class ShellViewModel : ObservableObject, IShellViewModel
         }
         else if (e.Item is ParameterViewModel parameterViewModel)
         {
-            
             e.Accepted = parameterViewModel.Name.Contains(ParameterFilter, StringComparison.OrdinalIgnoreCase);
             return;
         }
@@ -117,7 +89,7 @@ public class ShellViewModel : ObservableObject, IShellViewModel
             parameterViewModel.OnIsSelectedChanged += async (_, _) => await Dispatcher.CurrentDispatcher.InvokeAsync(SearchResultsAsync);
             _parameters.Add(parameterViewModel);
         }
-        Parameters = new CollectionViewSource { Source = _parameters };
+
         Parameters.Filter += FilterParameters;
         Parameters.View.Refresh();
     }
