@@ -21,6 +21,7 @@ public class ShellViewModel : ObservableObject, IShellViewModel
     private readonly string? _archivePath;
     private string? _watchPath;
     private StringBuilder _importLogBuilder = new StringBuilder();
+    private readonly string? _tempPath;
 
     public ObservableCollection<string> MachineIds { get; set; } = new ObservableCollection<string>();
 
@@ -71,6 +72,7 @@ public class ShellViewModel : ObservableObject, IShellViewModel
         var configuration = builder.Build();
         _archivePath = configuration["ArchivePath"];
         _watchPath = configuration["WatchPath"];
+        _tempPath = configuration["TempPath"];
         Parameters = new CollectionViewSource { Source = _parameters };
         Results = new ObservableCollection<Parameter>();
     }
@@ -115,6 +117,72 @@ public class ShellViewModel : ObservableObject, IShellViewModel
             _importLogBuilder.AppendLine($"{fileName} imported.");
             OnPropertyChanged(nameof(ImportLog));
         }
+
+        StartFileWatcher();
+    }
+
+    private void StartFileWatcher()
+    {
+        Task.Run(
+            () =>
+            {
+                var watcher = new FileSystemWatcher(_watchPath);
+                watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName;
+
+                // Only watch text files.
+                watcher.Filter = "*.csv";
+
+                // Add event handlers
+                watcher.Created += OnCreated;
+
+                // Begin watching
+                watcher.EnableRaisingEvents = true;
+                while (true)
+                {
+                    
+                }
+
+                void OnCreated(object source, FileSystemEventArgs eventArgs)
+                {
+                    var maxRetries = 10;
+                    var retryDelayMs = 1000; // 1 second delay between retries
+
+                    var retryCount = 0;
+                    var fileAccessible = false;
+                    try
+                    {
+                        while (retryCount < maxRetries && !fileAccessible)
+                        {
+                            try
+                            {
+                                var destFileName = Path.Combine(_tempPath, eventArgs.Name);
+                                File.Copy(eventArgs.FullPath, destFileName, true);
+                                _importLogBuilder.AppendLine($"Importing {eventArgs.Name}.");
+                                OnPropertyChanged(nameof(ImportLog));
+                                var fileName = ImportFile(destFileName);
+                                File.Delete(eventArgs.FullPath);
+                                File.Delete(destFileName);
+                                fileAccessible = true;
+                                _importLogBuilder.AppendLine($"{fileName} imported.");
+                                OnPropertyChanged(nameof(ImportLog));
+                            }
+                            catch (IOException ex)
+                            {
+                                retryCount++;
+                                Thread.Sleep(retryDelayMs); // Wait before retrying
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                    }
+                }
+            });
     }
 
     private string ImportFile(string file)
