@@ -9,7 +9,7 @@ namespace CsvToMongoDb.Import.Test;
 [TestFixture]
 public class ImportServiceTests
 {
-    private readonly IImportService _importService = new ImportService(new MongoClient("mongodb://localhost:27017"), "testDB");
+    private readonly IImportService _importService = new ImportService(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB"));
     private readonly ISearchService _searchService = new SearchService(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB"), Mock.Of<ILogger<SearchService>>());
     private readonly ICleanupService _cleanupService = new CleanupService(new MongoClient("mongodb://localhost:27017"), "testDB", Mock.Of<ILogger<ImportService>>());
 

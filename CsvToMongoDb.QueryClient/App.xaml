@@ -6,6 +6,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <Brush x:Key="WindowBackground">#3C3F41</Brush>
+                    <Brush x:Key="BorderBrush">#36393B</Brush>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

@@ -1,20 +1,26 @@
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Text;
 using System.Windows.Data;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CsvToMongoDb.Import;
+using Microsoft.Extensions.Configuration;
 
 namespace CsvToMongoDb.QueryClient.ViewModels;
 
 public class ShellViewModel : ObservableObject, IShellViewModel
 {
-
     private CollectionViewSource _parametersViewSource = new CollectionViewSource();
     private IList<ParameterViewModel> _parameters = new List<ParameterViewModel>();
     private ObservableCollection<Parameter> _results = new ObservableCollection<Parameter>();
     private readonly ISearchService _searchService;
+    private readonly IImportService _importService;
     private string? _parameterFilter;
     private string? _selectedMachineId;
+    private readonly string? _archivePath;
+    private string? _watchPath;
+    private StringBuilder _importLogBuilder = new StringBuilder();
 
     public ObservableCollection<string> MachineIds { get; set; } = new ObservableCollection<string>();
 
@@ -54,9 +60,17 @@ public class ShellViewModel : ObservableObject, IShellViewModel
         }
     }
 
-    public ShellViewModel(ISearchService searchService)
+    public string ImportLog => _importLogBuilder.ToString();
+
+    public ShellViewModel(ISearchService searchService, IImportService importService)
     {
         _searchService = searchService;
+        _importService = importService;
+        var builder = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        var configuration = builder.Build();
+        _archivePath = configuration["ArchivePath"];
+        _watchPath = configuration["WatchPath"];
         Parameters = new CollectionViewSource { Source = _parameters };
         Results = new ObservableCollection<Parameter>();
     }
@@ -92,6 +106,23 @@ public class ShellViewModel : ObservableObject, IShellViewModel
 
         Parameters.Filter += FilterParameters;
         Parameters.View.Refresh();
+        foreach (var file in Directory.GetFiles(_watchPath, "*.csv"))
+        {
+            _importLogBuilder.AppendLine($"Importing {file}.");
+            OnPropertyChanged(nameof(ImportLog));
+            var fileName = string.Empty;
+            await Task.Run(() => { fileName = ImportFile(file); });
+            _importLogBuilder.AppendLine($"{fileName} imported.");
+            OnPropertyChanged(nameof(ImportLog));
+        }
+    }
+
+    private string ImportFile(string file)
+    {
+        var fileInfo = new FileInfo(file);
+        _importService.ImportCsvData(fileInfo.FullName);
+        File.Move(fileInfo.FullName, Path.Combine(_archivePath, fileInfo.Name), true);
+        return fileInfo.Name;
     }
 
     private async Task SearchResultsAsync()

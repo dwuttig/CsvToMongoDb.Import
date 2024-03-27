@@ -8,9 +8,9 @@ namespace CsvToMongoDb.Import
     {
         private IMongoDatabase _database;
 
-        public ImportService(MongoClient mongoClient, string dataBaseName)
+        public ImportService(IMongoDatabase mongoDatabase)
         {
-            _database = mongoClient.GetDatabase(dataBaseName);
+            _database = mongoDatabase;
         }
 
         public void ImportCsvData(string csvFilePath)

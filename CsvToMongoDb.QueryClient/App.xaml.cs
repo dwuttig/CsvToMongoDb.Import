@@ -34,6 +34,7 @@ public partial class App : Application
                 new ServiceCollection()
                     .AddLogging(builder => builder.AddLog4Net("Configuration/log4net.config"))
                     .AddSingleton<ISearchService, SearchService>()
+                    .AddSingleton<IImportService, ImportService>()
                     .AddSingleton(typeof(IMongoDatabase), new MongoClient(configuration["MongoDbConnectionString"]).GetDatabase(configuration["MongoDbDatabase"]))
                     .AddSingleton<IShellViewModel, ShellViewModel>()
                     .BuildServiceProvider());

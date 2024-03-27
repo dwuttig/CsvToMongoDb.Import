@@ -18,7 +18,9 @@ internal class Program
         _configuration = builder.Build();
         var watchPath = _configuration["WatchPath"];
 
-        _importService = new ImportService(new MongoClient(_configuration["mongoDbClient"]), _configuration["mongoDbName"]);
+        MongoClient mongoClient = new MongoClient(_configuration["mongoDbClient"]);
+        string dataBaseName = _configuration["mongoDbName"];
+        _importService = new ImportService(mongoClient.GetDatabase(dataBaseName));
 
         foreach (var file in Directory.GetFiles(_configuration["WatchPath"], "*.csv"))
         {

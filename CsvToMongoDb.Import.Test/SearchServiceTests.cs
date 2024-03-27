@@ -9,15 +9,14 @@ namespace CsvToMongoDb.Import.Test;
 [TestFixture]
 public class SearchServiceTests
 {
-    private readonly IImportService _importService = new ImportService(new MongoClient("mongodb://localhost:27017"), "testDB");
+    private readonly IImportService _importService = new ImportService(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB"));
     private readonly ICleanupService _cleanupService = new CleanupService(new MongoClient("mongodb://localhost:27017"), "testDB", Mock.Of<ILogger<ImportService>>());
     private ISearchService _searchService;
 
     [OneTimeSetUp]
     public void Setup()
     {
-        MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
-        _searchService = new SearchService(mongoClient.GetDatabase("testDB"), Mock.Of<ILogger<SearchService>>());
+        _searchService = new SearchService(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB"), Mock.Of<ILogger<SearchService>>());
         _cleanupService.DeleteAllAsync();
     }
 
