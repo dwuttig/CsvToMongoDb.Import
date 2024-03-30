@@ -76,21 +76,11 @@ public class ShellViewModel : ObservableObject, IShellViewModel
         Parameters = new CollectionViewSource { Source = _parameters };
         Results = new ObservableCollection<Parameter>();
     }
-
-    private void FilterParameters(object obj, FilterEventArgs e)
+    
+    public void LogException(string exceptionMessage)
     {
-        if (string.IsNullOrWhiteSpace(ParameterFilter))
-        {
-            e.Accepted = true;
-            return;
-        }
-        else if (e.Item is ParameterViewModel parameterViewModel)
-        {
-            e.Accepted = parameterViewModel.Name.Contains(ParameterFilter, StringComparison.OrdinalIgnoreCase);
-            return;
-        }
-
-        e.Accepted = false;
+        _importLogBuilder.AppendLine(exceptionMessage);
+        OnPropertyChanged(nameof(ImportLog));
     }
 
     public async Task InitializeAsync()
@@ -119,6 +109,22 @@ public class ShellViewModel : ObservableObject, IShellViewModel
         }
 
         StartFileWatcher();
+    }
+
+    private void FilterParameters(object obj, FilterEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(ParameterFilter))
+        {
+            e.Accepted = true;
+            return;
+        }
+        else if (e.Item is ParameterViewModel parameterViewModel)
+        {
+            e.Accepted = parameterViewModel.Name.Contains(ParameterFilter, StringComparison.OrdinalIgnoreCase);
+            return;
+        }
+
+        e.Accepted = false;
     }
 
     private void StartFileWatcher()

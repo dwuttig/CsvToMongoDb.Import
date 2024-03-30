@@ -18,4 +18,8 @@ internal class DesignShellViewModel : IShellViewModel
     public string? SelectedMachineId { get; set; } = "test";
 
     public ObservableCollection<Parameter> Results { get; init; } = new ObservableCollection<Parameter>();
+
+    public void LogException(string exceptionMessage)
+    {
+    }
 }

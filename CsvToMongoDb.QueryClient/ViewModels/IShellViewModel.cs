@@ -15,4 +15,6 @@ public interface IShellViewModel
     string? SelectedMachineId { get; set; }
 
     ObservableCollection<Parameter> Results { get; init; }
+
+    void LogException(string exceptionMessage);
 }
