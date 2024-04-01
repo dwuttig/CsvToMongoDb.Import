@@ -6,7 +6,7 @@ namespace CsvToMongoDb.Import;
 public class CleanupService : ICleanupService
 {
     private readonly ILogger<ImportService> _logger;
-    private IMongoDatabase _database;
+    private readonly IMongoDatabase _database;
 
     public CleanupService(MongoClient mongoClient, string dataBaseName, ILogger<ImportService> logger)
     {

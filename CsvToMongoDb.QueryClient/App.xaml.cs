@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CsvToMongoDb.Import;
 using CsvToMongoDb.QueryClient.ViewModels;
@@ -12,10 +13,13 @@ using DispatcherPriority = System.Windows.Threading.DispatcherPriority;
 namespace CsvToMongoDb.QueryClient;
 
 /// <summary>
-/// Interaction logic for App.xaml
+///     Interaction logic for App.xaml
 /// </summary>
 public partial class App : Application
 {
+    private const string AppSettingsFile = "Configuration/appsettings.json";
+    private const string Log4NetConfigFile = "Configuration/log4net.config";
+
     protected override void OnStartup(StartupEventArgs e)
     {
         try
@@ -24,30 +28,41 @@ public partial class App : Application
             if (MainWindow is null)
             {
                 MainWindow = new ShellView();
+                if (!File.Exists(AppSettingsFile))
+                {
+                    throw new FileNotFoundException($"The file '{AppSettingsFile}' was not found.");
+                }
+
                 IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-                configurationBuilder
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                configurationBuilder.AddJsonFile(AppSettingsFile, false, true);
                 var configuration = configurationBuilder.Build();
 
                 // Register services
+                var connectionString = configuration["MongoDbConnectionString"] ?? throw new InvalidOperationException("MongoDbConnectionString is missing in the configuration.");
+                var databaseName = configuration["MongoDbDatabase"] ?? throw new InvalidOperationException("MongoDbDatabase is missing in the configuration.");
+                var watchPath = configuration["WatchPath"] ?? throw new InvalidOperationException("WatchPath is missing in the configuration.");
+                var tempPath = configuration["TempPath"] ?? throw new InvalidOperationException("TempPath is missing in the configuration.");
+                var archivePath = configuration["ArchivePath"] ?? throw new InvalidOperationException("ArchivePath is missing in the configuration.");
+                
                 Ioc.Default.ConfigureServices(
                     new ServiceCollection()
-                        .AddLogging(builder => builder.AddLog4Net("Configuration/log4net.config"))
+                        .AddLogging(builder => builder.AddLog4Net(Log4NetConfigFile))
                         .AddSingleton<ISearchService, SearchService>()
                         .AddSingleton<IImportService, ImportService>()
-                        .AddSingleton(typeof(IMongoDatabase), new MongoClient(configuration["MongoDbConnectionString"]).GetDatabase(configuration["MongoDbDatabase"]))
+                        .AddSingleton(typeof(PathConfiguration), new PathConfiguration(watchPath, tempPath, archivePath))
+                        .AddSingleton(typeof(IMongoDatabase), new MongoClient(connectionString).GetDatabase(databaseName))
                         .AddSingleton<IShellViewModel, ShellViewModel>()
                         .BuildServiceProvider());
 
-                var shellViewModel = Ioc.Default.GetService<IShellViewModel>();
+                var shellViewModel = Ioc.Default.GetService<IShellViewModel>() ?? throw new InvalidOperationException("IShellViewModel service not found.");
                 MainWindow.DataContext = shellViewModel;
-                Dispatcher.BeginInvoke(DispatcherPriority.Background , new Action(() => shellViewModel.InitializeAsync().ConfigureAwait(true)));
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => shellViewModel.InitializeAsync().ConfigureAwait(true)));
                 MainWindow.Show();
             }
         }
         catch (Exception ex)
         {
-            var shellViewModel = Ioc.Default.GetService<IShellViewModel>();
+            var shellViewModel = Ioc.Default.GetService<IShellViewModel>() ?? throw new InvalidOperationException("IShellViewModel service not found.");
             shellViewModel?.LogException($"Error during startup: {ex.Message}");
         }
     }

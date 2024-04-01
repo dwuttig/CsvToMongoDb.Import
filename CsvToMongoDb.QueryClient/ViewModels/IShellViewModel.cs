@@ -6,15 +6,15 @@ namespace CsvToMongoDb.QueryClient.ViewModels;
 
 public interface IShellViewModel
 {
-    Task InitializeAsync();
+    ObservableCollection<string> MachineIds { get; set; }
 
     CollectionViewSource Parameters { get; }
 
-    ObservableCollection<string> MachineIds { get; set; }
+    ObservableCollection<Parameter> Results { get; init; }
 
     string? SelectedMachineId { get; set; }
 
-    ObservableCollection<Parameter> Results { get; init; }
+    Task InitializeAsync();
 
     void LogException(string exceptionMessage);
 }

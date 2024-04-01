@@ -5,6 +5,7 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:viewModels="clr-namespace:CsvToMongoDb.QueryClient.ViewModels"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:views="clr-namespace:CsvToMongoDb.QueryClient.Views"
                  mc:Ignorable="d"
                  Title="ShellView"
                  Icon="../Resources/Icon.png"
@@ -100,9 +101,10 @@
             <Label Content="Import log:"
                    DockPanel.Dock="Top">
             </Label>
-            <TextBox Foreground="White"
-                     IsReadOnly="True"
-                     Text="{Binding ImportLog, Mode=OneWay}"
+            <TextBox IsReadOnly="True" VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto"
+                     Text="{Binding ImportLog, Mode=OneWay}" 
+                     views:TextBoxExtensions.AutoScrollToEnd="True"
                      DockPanel.Dock="Bottom">
             </TextBox>
         </DockPanel>

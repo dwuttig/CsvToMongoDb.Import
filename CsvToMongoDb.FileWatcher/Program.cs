@@ -14,12 +14,12 @@ internal class Program
     public static void Main(string[] args)
     {
         var builder = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            .AddJsonFile("appsettings.json", true, true);
         _configuration = builder.Build();
         var watchPath = _configuration["WatchPath"];
 
-        MongoClient mongoClient = new MongoClient(_configuration["mongoDbClient"]);
-        string dataBaseName = _configuration["mongoDbName"];
+        var mongoClient = new MongoClient(_configuration["mongoDbClient"]);
+        var dataBaseName = _configuration["mongoDbName"];
         _importService = new ImportService(mongoClient.GetDatabase(dataBaseName));
 
         foreach (var file in Directory.GetFiles(_configuration["WatchPath"], "*.csv"))
