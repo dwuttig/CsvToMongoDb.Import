@@ -73,6 +73,11 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: Setup MongoDB
+      uses: supercharge/mongodb-github-action@1.6.0
+      with:
+        mongodb-version: 4.4
+
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
