@@ -72,11 +72,12 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - name: MongoDB for GitHub Actions
-    # You may pin to the exact commit or the version.
-    # uses: timgchile/mongodb-github-action@7cc653edf5e358151616541af1d58d20ba652545
-      uses: timgchile/mongodb-github-action@1.7.4
-
+        
+    - name: Use MongoDB in Github Actions
+      # You may pin to the exact commit or the version.
+      # uses: MongoCamp/mongodb-github-action@e99146d301947392769a36e1805b166aa8bcb2cc
+      uses: MongoCamp/mongodb-github-action@1.2.0      
+      
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
