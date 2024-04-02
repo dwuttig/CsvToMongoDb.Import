@@ -52,7 +52,7 @@ jobs:
       matrix:
         configuration: [Release]
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
+    runs-on: ubuntu-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
@@ -78,11 +78,8 @@ jobs:
       # uses: MongoCamp/mongodb-github-action@e99146d301947392769a36e1805b166aa8bcb2cc
       uses: MongoCamp/mongodb-github-action@1.2.0      
         
-    - name: Build DotNet
-      # You may pin to the exact commit or the version.
-      # uses: Elskom/build-dotnet@54d97a0f7d5d5ca946404976db00d27386b09254
-      uses: Elskom/build-dotnet@v1.1.1
-      with:
-        # Filepath of the solution of which contains all the projects to be built, optionally tested and packed, relative to root of repository
-        SOLUTION_FILE_PATH: CsvToMongoDb.Import.sln
-        TEST: True
+    - name: Build 
+      run: dotnet build CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj 
+    
+    - name: Run tests 
+      run: dotnet test CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj 
