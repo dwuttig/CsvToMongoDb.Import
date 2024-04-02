@@ -24,10 +24,8 @@ public partial class App : Application
     {
         try
         {
-            // Ensure the UI is initialized
             if (MainWindow is null)
             {
-                MainWindow = new ShellView();
                 if (!File.Exists(AppSettingsFile))
                 {
                     throw new FileNotFoundException($"The file '{AppSettingsFile}' was not found.");
@@ -49,12 +47,16 @@ public partial class App : Application
                         .AddLogging(builder => builder.AddLog4Net(Log4NetConfigFile))
                         .AddSingleton<ISearchService, SearchService>()
                         .AddSingleton<IImportService, ImportService>()
+                        .AddSingleton<IUserSettingsService, UserSettingsService>()
+                        .AddSingleton<IThemeService, ThemeService>()
                         .AddSingleton(typeof(PathConfiguration), new PathConfiguration(watchPath, tempPath, archivePath))
                         .AddSingleton(typeof(IMongoDatabase), new MongoClient(connectionString).GetDatabase(databaseName))
                         .AddSingleton<IShellViewModel, ShellViewModel>()
                         .BuildServiceProvider());
-
+                
+                SetTheme();
                 var shellViewModel = Ioc.Default.GetService<IShellViewModel>() ?? throw new InvalidOperationException("IShellViewModel service not found.");
+                MainWindow = new ShellView();
                 MainWindow.DataContext = shellViewModel;
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => shellViewModel.InitializeAsync().ConfigureAwait(true)));
                 MainWindow.Show();
@@ -63,7 +65,16 @@ public partial class App : Application
         catch (Exception ex)
         {
             var shellViewModel = Ioc.Default.GetService<IShellViewModel>() ?? throw new InvalidOperationException("IShellViewModel service not found.");
-            shellViewModel?.LogException($"Error during startup: {ex.Message}");
+            shellViewModel.LogException($"Error during startup: {ex.Message}");
         }
+    }
+
+    private static void SetTheme()
+    {
+        var userSettingsService = Ioc.Default.GetRequiredService<IUserSettingsService>() ?? throw new InvalidOperationException("IUserSettingsService service not found.");
+        var themeService = Ioc.Default.GetRequiredService<IThemeService>() ?? throw new InvalidOperationException("IThemeService service not found.");
+
+        var userSettings = userSettingsService.LoadUserSettings();
+        themeService.ChangeTheme(userSettings.SelectedTheme);
     }
 }

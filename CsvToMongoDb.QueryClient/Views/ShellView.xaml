@@ -13,6 +13,7 @@
                  Width="800">
     <Grid Margin="4">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="4*"></RowDefinition>
             <RowDefinition Height="5"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
@@ -22,7 +23,18 @@
             <ColumnDefinition Width="5"></ColumnDefinition>
             <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <DockPanel Margin="4">
+        <Menu Grid.ColumnSpan="4">
+            <MenuItem Header="View">
+                <MenuItem Header="Themes">
+                    <MenuItem Header="Light"
+                              Click="ChangeTheme_Click" />
+                    <MenuItem Header="Dark"
+                              Click="ChangeTheme_Click" />
+                </MenuItem></MenuItem>
+        </Menu>
+        <DockPanel Grid.Row="1"
+                   Grid.Column="0"
+                   Margin="4">
             <Label Content="MachineID:"
                    DockPanel.Dock="Top">
             </Label>
@@ -59,7 +71,7 @@
                 </ListView.Template>
             </ListView>
         </DockPanel>
-        <GridSplitter Grid.Row="0"
+        <GridSplitter Grid.Row="1"
                       Grid.Column="1"
                       Width="5"
                       ResizeBehavior="PreviousAndNext">
@@ -68,7 +80,7 @@
         <DataGrid Margin="8"
                   Name="ParameterGrid"
                   IsReadOnly="True"
-                  Grid.Row="0"
+                  Grid.Row="1"
                   Grid.Column="2"
                   ItemsSource="{Binding Results}"
                   SelectionUnit="Cell"
@@ -88,7 +100,7 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <GridSplitter Grid.Row="1"
+        <GridSplitter Grid.Row="2"
                       Grid.Column="0"
                       Grid.ColumnSpan="3"
                       Height="5"
@@ -96,7 +108,7 @@
         </GridSplitter>
         <DockPanel Grid.Column="0"
                    Grid.ColumnSpan="3"
-                   Grid.Row="2"
+                   Grid.Row="3"
                    Margin="4">
             <Label Content="Import log:"
                    DockPanel.Dock="Top">
