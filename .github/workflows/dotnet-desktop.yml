@@ -77,22 +77,15 @@ jobs:
       # You may pin to the exact commit or the version.
       # uses: MongoCamp/mongodb-github-action@e99146d301947392769a36e1805b166aa8bcb2cc
       uses: MongoCamp/mongodb-github-action@1.2.0      
-      
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
+        
+    - name: Build DotNet
       # You may pin to the exact commit or the version.
-      # uses: warrenbuckley/Setup-MSBuild@1176db82e64cd53b4944f0e57c2abec104b4782d
-      uses: warrenbuckley/Setup-MSBuild@v1
-
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      run: dotnet test
-
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
+      # uses: Elskom/build-dotnet@54d97a0f7d5d5ca946404976db00d27386b09254
+      uses: Elskom/build-dotnet@v1.1.1
+      with:
+        # Filepath of the solution of which contains all the projects to be built, optionally tested and packed, relative to root of repository
+        SOLUTION_FILE_PATH: CsvToMongoDb.Import.sln
+        TEST: True
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
