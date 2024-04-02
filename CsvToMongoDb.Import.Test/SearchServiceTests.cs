@@ -6,6 +6,7 @@ using Shouldly;
 namespace CsvToMongoDb.Import.Test;
 
 [TestFixture]
+[NonParallelizable]
 public class SearchServiceTests
 {
     [TearDown]
