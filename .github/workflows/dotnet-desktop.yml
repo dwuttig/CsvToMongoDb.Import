@@ -79,7 +79,7 @@ jobs:
       uses: MongoCamp/mongodb-github-action@1.2.0      
         
     - name: Build 
-      run: dotnet build CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj 
+      run: dotnet build $env:Test_Project_Path
     
     - name: Run tests 
-      run: dotnet test CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj 
+      run: dotnet test $env:Test_Project_Path --no-build
