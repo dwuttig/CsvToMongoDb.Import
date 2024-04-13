@@ -41,7 +41,7 @@ public partial class App : Application
                 var watchPath = configuration["WatchPath"] ?? throw new InvalidOperationException("WatchPath is missing in the configuration.");
                 var tempPath = configuration["TempPath"] ?? throw new InvalidOperationException("TempPath is missing in the configuration.");
                 var archivePath = configuration["ArchivePath"] ?? throw new InvalidOperationException("ArchivePath is missing in the configuration.");
-                
+
                 Ioc.Default.ConfigureServices(
                     new ServiceCollection()
                         .AddLogging(builder => builder.AddLog4Net(Log4NetConfigFile))
@@ -54,7 +54,7 @@ public partial class App : Application
                         .AddSingleton(typeof(IMongoDatabase), new MongoClient(connectionString).GetDatabase(databaseName))
                         .AddSingleton<IShellViewModel, ShellViewModel>()
                         .BuildServiceProvider());
-                
+
                 SetTheme();
                 var shellViewModel = Ioc.Default.GetService<IShellViewModel>() ?? throw new InvalidOperationException("IShellViewModel service not found.");
                 MainWindow = new ShellView();

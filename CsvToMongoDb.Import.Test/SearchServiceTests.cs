@@ -38,10 +38,10 @@ public class SearchServiceTests
     }
 
     [Test]
-    public async Task GetAllParameters()
+    public void GetAllParameters()
     {
         // Act
-        var result = (await _searchService.GetAllParametersByMachineIdAsync("1081").ConfigureAwait(false)).ToList();
+        var result = _searchService.GetAllParametersByMachineIdAsync("1081").ToList();
 
         // Assert
         result.Count().ShouldBe(4502);

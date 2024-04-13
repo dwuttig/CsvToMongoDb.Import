@@ -10,38 +10,38 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Common" Version="8.2.2" />
-      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-      <PackageReference Include="MahApps.Metro" Version="2.4.10" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
+        <PackageReference Include="CommunityToolkit.Common" Version="8.2.2"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2"/>
+        <PackageReference Include="MahApps.Metro" Version="2.4.10"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Models\" />
+        <Folder Include="Models\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CsvToMongoDb.Import\CsvToMongoDb.Import.csproj" />
+        <ProjectReference Include="..\CsvToMongoDb.Import\CsvToMongoDb.Import.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Configuration\log4net.config">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Configuration\appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="readme.md">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <None Update="Configuration\log4net.config">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Configuration\appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="readme.md">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Resources\Icon.png" />
-      <Resource Include="Resources\Icon.png" />
+        <None Remove="Resources\Icon.png"/>
+        <Resource Include="Resources\Icon.png"/>
     </ItemGroup>
 
 </Project>

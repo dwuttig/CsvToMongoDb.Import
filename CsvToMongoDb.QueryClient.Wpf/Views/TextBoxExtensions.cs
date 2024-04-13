@@ -11,12 +11,9 @@ public static class TextBoxExtensions
         typeof(TextBoxExtensions),
         new PropertyMetadata(default(bool), OnAutoScrollToEndChanged));
 
-    private static void OnAutoScrollToEndChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    public static bool GetAutoScrollToEnd(TextBox element)
     {
-        if (d is TextBox textBox && e.NewValue is bool newValue && newValue)
-        {
-            textBox.TextChanged += (s, e) => textBox.ScrollToEnd();
-        }
+        return (bool)element.GetValue(AutoScrollToEndProperty);
     }
 
     public static void SetAutoScrollToEnd(TextBox element, bool value)
@@ -24,8 +21,11 @@ public static class TextBoxExtensions
         element.SetValue(AutoScrollToEndProperty, value);
     }
 
-    public static bool GetAutoScrollToEnd(TextBox element)
+    private static void OnAutoScrollToEndChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        return (bool)element.GetValue(AutoScrollToEndProperty);
+        if (d is TextBox textBox && e.NewValue is bool newValue && newValue)
+        {
+            textBox.TextChanged += (s, e) => textBox.ScrollToEnd();
+        }
     }
 }

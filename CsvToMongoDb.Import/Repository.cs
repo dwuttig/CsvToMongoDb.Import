@@ -12,16 +12,16 @@ public class Repository : IRepository
         _database = mongoDatabase;
     }
 
-    public IMongoCollection<BsonDocument> GetOrCreateCollection(string collectionName)
+    public IDocumentCollection GetOrCreateCollection(string collectionName)
     {
         if (_database.GetCollection<BsonDocument>(collectionName) is { } collection)
         {
-            return collection;
+            return new MongoDocumentCollection(collection);
         }
 
         _database.CreateCollection(collectionName);
 
-        return _database.GetCollection<BsonDocument>(collectionName);
+        return new MongoDocumentCollection(_database.GetCollection<BsonDocument>(collectionName));
     }
 
     public void InsertDocument(string collectionName, BsonDocument document)

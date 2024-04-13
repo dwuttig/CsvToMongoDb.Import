@@ -1,5 +1,4 @@
 using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace CsvToMongoDb.Import;
 
@@ -7,7 +6,7 @@ public interface IRepository
 {
     Task<IEnumerable<string>> GetAllCollectionNamesAsync();
 
-    IMongoCollection<BsonDocument> GetOrCreateCollection(string collectionName);
+    IDocumentCollection GetOrCreateCollection(string collectionName);
 
     void InsertDocument(string collectionName, BsonDocument document);
 

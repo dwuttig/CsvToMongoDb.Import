@@ -16,9 +16,9 @@ public class ShellViewModel : ObservableObject, IShellViewModel
     private readonly IList<ParameterViewModel> _parameters = new List<ParameterViewModel>();
     private readonly StringBuilder _importLogBuilder = new StringBuilder();
     private readonly PathConfiguration _pathConfiguration;
+    private readonly string fileMask = "*.csv";
     private string? _parameterFilter;
     private string? _selectedMachineId;
-    private readonly string fileMask = "*.csv";
 
     public string ImportLog => _importLogBuilder.ToString();
 
@@ -74,7 +74,7 @@ public class ShellViewModel : ObservableObject, IShellViewModel
         SelectedMachineId = MachineIds.FirstOrDefault();
         if (SelectedMachineId != null)
         {
-            var allParametersAsync = await _searchService.GetAllParametersByMachineIdAsync(SelectedMachineId).ConfigureAwait(true);
+            var allParametersAsync = _searchService.GetAllParametersByMachineIdAsync(SelectedMachineId);
             foreach (var p in allParametersAsync.ToList())
             {
                 var parameterViewModel = new ParameterViewModel(p);

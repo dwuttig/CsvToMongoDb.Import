@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace CsvToMongoDb.Import;
 
@@ -20,16 +19,10 @@ public class SearchService : ISearchService
         return await _repository.GetAllCollectionNamesAsync();
     }
 
-    public async Task<IEnumerable<string>> GetAllParametersByMachineIdAsync(string machineId)
+    public IEnumerable<string> GetAllParametersByMachineIdAsync(string machineId)
     {
-        var parameters = new List<string>();
         var collection = _repository.GetOrCreateCollection(machineId);
-        foreach (var parameter in collection.Distinct<string>("Name", new BsonDocument()).ToList())
-        {
-            parameters.Add(parameter);
-        }
-
-        return parameters;
+        return collection.Distinct("Name", new BsonDocument());
     }
 
     public async Task<List<SearchResult>> SearchEverywhereAsync(string?[] blockNr, params string[] returnFields)
