@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Data;
 using CsvToMongoDb.Import;
 
-namespace CsvToMongoDb.QueryClient.ViewModels;
+namespace CsvToMongoDb.QueryClient.Wpf.ViewModels;
 
 internal class DesignShellViewModel : IShellViewModel
 {

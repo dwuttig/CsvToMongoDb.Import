@@ -1,4 +1,4 @@
-namespace CsvToMongoDb.QueryClient;
+namespace CsvToMongoDb.QueryClient.Wpf;
 
 public interface IUserSettingsService
 {

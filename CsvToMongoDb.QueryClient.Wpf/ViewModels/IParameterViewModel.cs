@@ -1,4 +1,4 @@
-namespace CsvToMongoDb.QueryClient.ViewModels;
+namespace CsvToMongoDb.QueryClient.Wpf.ViewModels;
 
 public interface IParameterViewModel
 {

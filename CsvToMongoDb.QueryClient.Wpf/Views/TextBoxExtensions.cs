@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace CsvToMongoDb.QueryClient.Views;
+namespace CsvToMongoDb.QueryClient.Wpf.Views;
 
 public static class TextBoxExtensions
 {

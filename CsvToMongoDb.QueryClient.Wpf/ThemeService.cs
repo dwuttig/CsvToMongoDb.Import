@@ -1,7 +1,7 @@
 using System.Windows;
 using ControlzEx.Theming;
 
-namespace CsvToMongoDb.QueryClient;
+namespace CsvToMongoDb.QueryClient.Wpf;
 
 public class ThemeService : IThemeService
 {

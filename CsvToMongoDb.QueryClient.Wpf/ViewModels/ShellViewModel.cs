@@ -7,7 +7,7 @@ using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CsvToMongoDb.Import;
 
-namespace CsvToMongoDb.QueryClient.ViewModels;
+namespace CsvToMongoDb.QueryClient.Wpf.ViewModels;
 
 public class ShellViewModel : ObservableObject, IShellViewModel
 {

@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace CsvToMongoDb.QueryClient.ViewModels;
+namespace CsvToMongoDb.QueryClient.Wpf.ViewModels;
 
 public class ParameterViewModel : ObservableObject, IParameterViewModel
 {

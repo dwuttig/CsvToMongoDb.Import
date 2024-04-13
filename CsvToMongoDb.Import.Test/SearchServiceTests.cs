@@ -18,7 +18,7 @@ public class SearchServiceTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _searchService = new SearchService(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB"), Mock.Of<ILogger<SearchService>>());
+        _searchService = new SearchService(new Repository(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB")), Mock.Of<ILogger<SearchService>>());
         _cleanupService.DeleteAllAsync();
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
         _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (08_06_2019).csv");
@@ -89,7 +89,7 @@ public class SearchServiceTests
         parameter.Unit.ShouldBeEmpty();
     }
 
-    private readonly IImportService _importService = new ImportService(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB"));
+    private readonly IImportService _importService = new ImportService(new Repository(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB")));
     private readonly ICleanupService _cleanupService = new CleanupService(new MongoClient("mongodb://localhost:27017"), "testDB", Mock.Of<ILogger<ImportService>>());
     private ISearchService _searchService;
 }

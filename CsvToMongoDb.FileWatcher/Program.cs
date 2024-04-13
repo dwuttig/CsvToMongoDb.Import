@@ -20,7 +20,7 @@ internal class Program
 
         var mongoClient = new MongoClient(_configuration["mongoDbClient"]);
         var dataBaseName = _configuration["mongoDbName"];
-        _importService = new ImportService(mongoClient.GetDatabase(dataBaseName));
+        _importService = new ImportService(new Repository(mongoClient.GetDatabase(dataBaseName)));
 
         foreach (var file in Directory.GetFiles(_configuration["WatchPath"], "*.csv"))
         {

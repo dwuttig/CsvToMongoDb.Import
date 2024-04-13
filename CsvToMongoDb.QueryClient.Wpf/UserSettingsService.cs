@@ -1,7 +1,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace CsvToMongoDb.QueryClient;
+namespace CsvToMongoDb.QueryClient.Wpf;
 
 public class UserSettingsService : IUserSettingsService
 {

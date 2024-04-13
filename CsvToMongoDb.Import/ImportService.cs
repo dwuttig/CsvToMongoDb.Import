@@ -1,15 +1,14 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace CsvToMongoDb.Import;
 
 public class ImportService : IImportService
 {
-    private readonly IMongoDatabase _database;
+    private readonly IRepository _repository;
 
-    public ImportService(IMongoDatabase mongoDatabase)
+    public ImportService(IRepository repository)
     {
-        _database = mongoDatabase;
+        _repository = repository;
     }
 
     public void ImportCsvData(string csvFilePath)
@@ -20,7 +19,6 @@ public class ImportService : IImportService
         }
 
         var collectionName = new FileInfo(csvFilePath).Name;
-        var collection = GetOrCreateCollection(collectionName);
 
         var csvLines = File.ReadAllLines(csvFilePath);
         var header = csvLines.FirstOrDefault();
@@ -41,31 +39,10 @@ public class ImportService : IImportService
                 document.Add(header.Split(';')[i].Trim(), values[i].Trim());
             }
 
-            collection.InsertOne(document);
+            _repository.InsertDocument(collectionName, document);
         }
 
-        var blockNr = SearchBlockNr("Name", "BlockNr", collection);
-        _database.RenameCollection(collectionName, blockNr, new RenameCollectionOptions { DropTarget = true });
-    }
-
-    private IMongoCollection<BsonDocument> GetOrCreateCollection(string collectionName)
-    {
-        if (_database.GetCollection<BsonDocument>(collectionName) is { } collection)
-        {
-            return collection;
-        }
-
-        _database.CreateCollection(collectionName);
-
-        return _database.GetCollection<BsonDocument>(collectionName);
-    }
-
-    private static string SearchBlockNr(string field, string value, IMongoCollection<BsonDocument> collection)
-    {
-        var filter = Builders<BsonDocument>.Filter.Eq(field, value);
-        var find = collection.Find(filter);
-        var results = find.ToList();
-
-        return results.Select(d => d["Value"]).First().AsString;
+        var blockNr = _repository.SearchDocument("Name", "BlockNr", collectionName);
+        _repository.RenameCollection(collectionName, blockNr);
     }
 }

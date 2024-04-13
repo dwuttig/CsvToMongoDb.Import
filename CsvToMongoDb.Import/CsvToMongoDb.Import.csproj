@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-      <PackageReference Include="MongoDB.Driver" Version="2.24.0" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2"/>
+        <PackageReference Include="MongoDB.Driver" Version="2.24.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="obj\Debug\net8.0\" />
+        <Folder Include="obj\Debug\net8.0\"/>
     </ItemGroup>
 
 </Project>

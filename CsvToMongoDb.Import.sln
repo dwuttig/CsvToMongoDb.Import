@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToMongoDb.Import.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToMongoDb.FileWatcher", "CsvToMongoDb.FileWatcher\CsvToMongoDb.FileWatcher.csproj", "{FFA0CB27-8550-4F00-BDB5-A7709926636D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToMongoDb.QueryClient", "CsvToMongoDb.QueryClient\CsvToMongoDb.QueryClient.csproj", "{E1D7F975-AD0F-46FA-8CF3-F0EBA6AEC58F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToMongoDb.QueryClient.Wpf", "CsvToMongoDb.QueryClient.Wpf\CsvToMongoDb.QueryClient.Wpf.csproj", "{E1D7F975-AD0F-46FA-8CF3-F0EBA6AEC58F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

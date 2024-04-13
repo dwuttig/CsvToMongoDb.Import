@@ -1,49 +1,50 @@
-using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace CsvToMongoDb.Import;
 
-public class SearchService(IMongoDatabase mongoDatabase, ILogger<SearchService> logger) : ISearchService
+public class SearchService : ISearchService
 {
+    private readonly IRepository _repository;
+    private readonly ILogger<SearchService> _logger;
+
+    public SearchService(IRepository repository, ILogger<SearchService> logger)
+    {
+        _repository = repository;
+        _logger = logger;
+    }
+
     public async Task<IEnumerable<string>> GetAllMachineIdsAsync()
     {
-        return await (await mongoDatabase.ListCollectionNamesAsync().ConfigureAwait(false)).ToListAsync();
+        return await _repository.GetAllCollectionNamesAsync();
     }
 
     public async Task<IEnumerable<string>> GetAllParametersByMachineIdAsync(string machineId)
     {
-        var collections = await (await mongoDatabase.ListCollectionNamesAsync()).ToListAsync().ConfigureAwait(false);
-
         var parameters = new List<string>();
-        foreach (var collectionName in collections.Where(c => c == machineId))
+        var collection = _repository.GetOrCreateCollection(machineId);
+        foreach (var parameter in collection.Distinct<string>("Name", new BsonDocument()).ToList())
         {
-            var collection = mongoDatabase.GetCollection<BsonDocument>(collectionName);
-            foreach (var parameter in collection.Distinct<string>("Name", new BsonDocument()).ToList())
-            {
-                parameters.Add(parameter);
-            }
+            parameters.Add(parameter);
         }
+
         return parameters;
     }
 
     public async Task<List<SearchResult>> SearchEverywhereAsync(string?[] blockNr, params string[] returnFields)
     {
-        var collectionNamesAsync = await mongoDatabase.ListCollectionNamesAsync();
-        var collections = (await collectionNamesAsync.ToListAsync()).Where(c => blockNr.Contains(c));
+        var collections = (await _repository.GetAllCollectionNamesAsync()).Where(c => blockNr.Contains(c));
         var result = new List<SearchResult>();
 
         foreach (var collectionName in collections)
         {
-            var collection = mongoDatabase.GetCollection<BsonDocument>(collectionName);
-            IList<Parameter> parameters = new List<Parameter>();
+            var parameters = new List<Parameter>();
             foreach (var returnField in returnFields)
             {
-                var paramResult = Search(returnField, collection);
-                var value = paramResult.Select(d => d["Value"]).First().AsString;
-                var qualifiedName = paramResult.Select(d => d["Qualified Name"]).First().AsString;
-                var unit = paramResult.Select(d => d["Unit"]).First().AsString;
+                var value = _repository.SearchDocument("Name", returnField, collectionName);
+                var qualifiedName = _repository.SearchDocument("Name", returnField, collectionName);
+                var unit = _repository.SearchDocument("Name", returnField, collectionName);
                 parameters.Add(new Parameter(returnField, qualifiedName, value, unit));
             }
 
@@ -51,15 +52,5 @@ public class SearchService(IMongoDatabase mongoDatabase, ILogger<SearchService> 
         }
 
         return result;
-    }
-
-    private List<BsonDocument> Search(string value, IMongoCollection<BsonDocument> collection)
-    {
-        var filter = Builders<BsonDocument>.Filter.Eq("Name", value);
-        var find = collection.Find(filter);
-        var results = find.ToList();
-
-        logger.LogInformation($"Search results for parameter = {value}:");
-        return results;
     }
 }

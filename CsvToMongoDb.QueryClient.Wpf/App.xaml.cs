@@ -2,15 +2,15 @@
 using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CsvToMongoDb.Import;
-using CsvToMongoDb.QueryClient.ViewModels;
-using CsvToMongoDb.QueryClient.Views;
+using CsvToMongoDb.QueryClient.Wpf.ViewModels;
+using CsvToMongoDb.QueryClient.Wpf.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using DispatcherPriority = System.Windows.Threading.DispatcherPriority;
 
-namespace CsvToMongoDb.QueryClient;
+namespace CsvToMongoDb.QueryClient.Wpf;
 
 /// <summary>
 ///     Interaction logic for App.xaml
@@ -45,6 +45,7 @@ public partial class App : Application
                 Ioc.Default.ConfigureServices(
                     new ServiceCollection()
                         .AddLogging(builder => builder.AddLog4Net(Log4NetConfigFile))
+                        .AddSingleton<IRepository, Repository>()
                         .AddSingleton<ISearchService, SearchService>()
                         .AddSingleton<IImportService, ImportService>()
                         .AddSingleton<IUserSettingsService, UserSettingsService>()

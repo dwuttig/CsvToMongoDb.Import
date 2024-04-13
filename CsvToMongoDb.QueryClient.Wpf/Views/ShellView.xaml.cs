@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using MahApps.Metro.Controls;
 
-namespace CsvToMongoDb.QueryClient.Views;
+namespace CsvToMongoDb.QueryClient.Wpf.Views;
 
 public partial class ShellView : MetroWindow
 {
