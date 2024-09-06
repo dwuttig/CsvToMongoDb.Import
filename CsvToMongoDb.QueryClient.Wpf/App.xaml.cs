@@ -3,6 +3,8 @@ using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CsvToMongoDb.Import;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels;
+using CsvToMongoDb.QueryClient.Wpf.ViewModels.MachineDetail;
+using CsvToMongoDb.QueryClient.Wpf.ViewModels.ParameterSearch;
 using CsvToMongoDb.QueryClient.Wpf.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,6 +54,8 @@ public partial class App : Application
                         .AddSingleton<IThemeService, ThemeService>()
                         .AddSingleton(typeof(PathConfiguration), new PathConfiguration(watchPath, tempPath, archivePath))
                         .AddSingleton(typeof(IMongoDatabase), new MongoClient(connectionString).GetDatabase(databaseName))
+                        .AddSingleton<IMachineDetailViewModel, MachineDetailViewModel>()
+                        .AddSingleton<IParameterSearchViewModel, ParameterSearchViewModel>()
                         .AddSingleton<IShellViewModel, ShellViewModel>()
                         .BuildServiceProvider());
 
@@ -59,14 +63,15 @@ public partial class App : Application
                 var shellViewModel = Ioc.Default.GetService<IShellViewModel>() ?? throw new InvalidOperationException("IShellViewModel service not found.");
                 MainWindow = new ShellView();
                 MainWindow.DataContext = shellViewModel;
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => shellViewModel.InitializeAsync().ConfigureAwait(true)));
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => shellViewModel.MachineDetailViewModel.InitializeAsync().ConfigureAwait(true)));
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => shellViewModel.ParameterSearchViewModel.InitializeAsync().ConfigureAwait(true)));
                 MainWindow.Show();
             }
         }
         catch (Exception ex)
         {
             var shellViewModel = Ioc.Default.GetService<IShellViewModel>() ?? throw new InvalidOperationException("IShellViewModel service not found.");
-            shellViewModel.LogException($"Error during startup: {ex.Message}");
+            shellViewModel.MachineDetailViewModel.LogException($"Error during startup: {ex.Message}");
         }
     }
 

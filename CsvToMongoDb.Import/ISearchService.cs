@@ -6,5 +6,9 @@ public interface ISearchService
 
     IEnumerable<string> GetAllParametersByMachineIdAsync(string machineId);
 
-    Task<List<SearchResult>> SearchEverywhereAsync(string?[] blockNr, params string[] returnFields);
+    Task<List<SearchResult>> SearchEverywhereAsync(string?[] blockNr, params string[] parameterNames);
+
+    Task<IEnumerable<string>> GetAllParameters();
+
+    Task<List<SearchResult>> SearchByTypeAsync(IList<MachineType> machineTypes, params string[] parameterNames);
 }

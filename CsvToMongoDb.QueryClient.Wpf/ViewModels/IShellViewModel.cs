@@ -1,20 +1,14 @@
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using CsvToMongoDb.Import;
+using CsvToMongoDb.QueryClient.Wpf.ViewModels.MachineDetail;
+using CsvToMongoDb.QueryClient.Wpf.ViewModels.ParameterSearch;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels;
 
 public interface IShellViewModel
 {
-    ObservableCollection<string> MachineIds { get; set; }
+    IMachineDetailViewModel MachineDetailViewModel { get; }
 
-    CollectionViewSource Parameters { get; }
-
-    ObservableCollection<Parameter> Results { get; init; }
-
-    string? SelectedMachineId { get; set; }
-
-    Task InitializeAsync();
-
-    void LogException(string exceptionMessage);
+    IParameterSearchViewModel ParameterSearchViewModel { get; }
 }

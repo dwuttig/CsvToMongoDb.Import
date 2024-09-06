@@ -12,5 +12,7 @@ public interface IRepository
 
     void RenameCollection(string oldName, string newName);
 
-    string SearchDocument(string field, string value, string collectionName);
+    ParameterResult SearchDocument(string field, string value, string collectionName);
+
+    IList<string> GetAllFields(string collectionName);
 }

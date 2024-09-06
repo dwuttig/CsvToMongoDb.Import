@@ -30,14 +30,30 @@ public class Repository : IRepository
         collection.InsertOne(document);
     }
 
-    public string SearchDocument(string field, string value, string collectionName)
+    public ParameterResult SearchDocument(string field, string value, string collectionName)
     {
         var collection = GetOrCreateCollection(collectionName);
         var filter = Builders<BsonDocument>.Filter.Eq(field, value);
         var find = collection.Find(filter);
         var results = find.ToList();
+        if (results.Count == 0)
+        {
+            return ParameterResult.Empty;
+        }
+        var valueResult = results.Select(d => d["Value"]).First().AsString;
+        var unit = results.Select(d => d["Unit"]).First().AsString;
+        var name = results.Select(d => d["Name"]).First().AsString;
+        var qualifiedName = results.Select(d => d["Qualified Name"]).First().AsString;
+        
 
-        return results.Select(d => d["Value"]).First().AsString;
+        return new ParameterResult(name, qualifiedName, valueResult, unit);
+    }
+
+    public IList<string> GetAllFields(string collectionName)
+    {
+        var collection = GetOrCreateCollection(collectionName);
+        var results = collection.Distinct("Name", new BsonDocument()).ToList();
+        return results;
     }
 
     public async Task<IEnumerable<string>> GetAllCollectionNamesAsync()

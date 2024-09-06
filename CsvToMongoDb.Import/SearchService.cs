@@ -25,7 +25,7 @@ public class SearchService : ISearchService
         return collection.Distinct("Name", new BsonDocument());
     }
 
-    public async Task<List<SearchResult>> SearchEverywhereAsync(string?[] blockNr, params string[] returnFields)
+    public async Task<List<SearchResult>> SearchEverywhereAsync(string?[] blockNr, params string[] parameterNames)
     {
         var collections = (await _repository.GetAllCollectionNamesAsync()).Where(c => blockNr.Contains(c));
         var result = new List<SearchResult>();
@@ -33,12 +33,57 @@ public class SearchService : ISearchService
         foreach (var collectionName in collections)
         {
             var parameters = new List<Parameter>();
-            foreach (var returnField in returnFields)
+            foreach (var parameterName in parameterNames)
             {
-                var value = _repository.SearchDocument("Name", returnField, collectionName);
-                var qualifiedName = _repository.SearchDocument("Name", returnField, collectionName);
-                var unit = _repository.SearchDocument("Name", returnField, collectionName);
-                parameters.Add(new Parameter(returnField, qualifiedName, value, unit));
+                var parameterResult = _repository.SearchDocument("Name", parameterName, collectionName);
+                if (parameterResult.Equals(ParameterResult.Empty))
+                {
+                    continue;
+                }
+                parameters.Add(new Parameter(collectionName, parameterName, parameterResult.QualifiedName, parameterResult.Value, parameterResult.Unit));
+            }
+
+            result.Add(new SearchResult(collectionName, parameters));
+        }
+
+        return result;
+    }
+
+    public async Task<IEnumerable<string>> GetAllParameters()
+    {
+        var collections = await _repository.GetAllCollectionNamesAsync();
+
+        var parameters = new List<string>();
+        foreach (var collectionName in collections)
+        {
+            parameters.AddRange(_repository.GetAllFields(collectionName));
+        }
+        
+        return parameters.Distinct();
+    }
+
+    public async Task<List<SearchResult>> SearchByTypeAsync(IList<MachineType> machineTypes, params string[] parameterNames)
+    {
+        var collections = await _repository.GetAllCollectionNamesAsync();
+        var result = new List<SearchResult>();
+
+        foreach (var collectionName in collections)
+        {
+            var parameters = new List<Parameter>();
+
+            var machineType = _repository.SearchDocument("Name", "TypeCnfg", collectionName);
+            if (!machineTypes.Contains((MachineType)int.Parse(machineType.Value)))
+            {
+                continue;
+            }
+            foreach (var parameterName in parameterNames)
+            {
+                var parameterResult = _repository.SearchDocument("Name", parameterName, collectionName);
+                if (parameterResult.Equals(ParameterResult.Empty))
+                {
+                    continue;
+                }
+                parameters.Add(new Parameter(collectionName, parameterName, parameterResult.QualifiedName, parameterResult.Value, parameterResult.Unit));
             }
 
             result.Add(new SearchResult(collectionName, parameters));
