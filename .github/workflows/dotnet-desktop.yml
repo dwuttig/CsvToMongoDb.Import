@@ -122,7 +122,7 @@ jobs:
           TargetPlatform:${{ matrix.targetplatform }}
           # Upload the MSIX package: https://github.com/marketplace/actions/upload-artifact
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: MSIX Package
           path: CsvToMongoDb.Package\AppPackages\
