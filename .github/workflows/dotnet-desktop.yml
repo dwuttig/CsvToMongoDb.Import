@@ -97,8 +97,7 @@ jobs:
     env:
       Solution_Name: CsvToMongoDb.Import.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
       Test_Project_Path: CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      App_Packages_Archive: CsvToMongoDb.zip   # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
     
     runs-on: windows-latest
 
@@ -114,8 +113,30 @@ jobs:
       - name: Publish
         run: dotnet publish
         
-      - name: Upload
-        uses: actions/upload-artifact@v4
+      - name: Create archive
+        run: Compress-Archive -Path .\CsvToMongoDb.Import\CsvToMongoDb.Import\CsvToMongoDb.QueryClient.Wpf\bin\Release\net8.0-windows\publish\* -DestinationPath .\$env:App_Packages_Archive  
+        
+        # Create the release:  https://github.com/actions/create-release
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          name: CsvToMongoDb
-          path: D:\a\CsvToMongoDb.Import\CsvToMongoDb.Import\CsvToMongoDb.QueryClient.Wpf\bin\Release\net8.0-windows\publish\
+          tag_name: ${{ github.ref}}.${{ matrix.targetplatform }}
+          release_name:  ${{ github.ref }}.${{ matrix.targetplatform }}
+          draft: false
+          prerelease: false
+  
+      # Upload release asset:   https://github.com/actions/upload-release-asset
+      - name: Update release asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}  # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: .\${{ env.App_Packages_Archive }}
+          asset_name: ${{ env.App_Packages_Archive }}
+          asset_content_type: application/zip
+     
