@@ -43,6 +43,6 @@ public class ImportService : IImportService
         }
 
         var blockNr = _repository.SearchDocument("Name", "BlockNr", collectionName);
-        _repository.RenameCollection(collectionName, blockNr.Name);
+        _repository.RenameCollection(collectionName, blockNr.Value);
     }
 }
