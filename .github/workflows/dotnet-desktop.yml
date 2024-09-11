@@ -115,7 +115,7 @@ jobs:
           
       # Build the Windows Application Packaging project
       - name: Build the Windows Application Packaging Project (wapproj) 
-        run: msbuild $env:Solution_Path /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle
+        run: dotnet build $env:Solution_Path /p:Platform=$env:TargetPlatform /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle
           AppxBundle:Never
           BuildMode:SideLoadOnly
           Configuration:Release
