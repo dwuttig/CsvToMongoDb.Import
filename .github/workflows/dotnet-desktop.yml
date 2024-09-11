@@ -61,8 +61,6 @@ jobs:
     env:
       Solution_Name: CsvToMongoDb.Import.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
       Test_Project_Path: CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
     steps:
     - name: Checkout
@@ -98,6 +96,7 @@ jobs:
       Solution_Name: CsvToMongoDb.Import.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
       Test_Project_Path: CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
       App_Packages_Archive: CsvToMongoDb.zip   # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      App_Packages_Directory: CsvToMongoDb.Import\CsvToMongoDb.Import\CsvToMongoDb.QueryClient.Wpf\bin\Release\net8.0-windows\publish    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
     
     runs-on: windows-latest
 
@@ -114,7 +113,7 @@ jobs:
         run: dotnet publish
         
       - name: Create archive
-        run: Compress-Archive -Path .\CsvToMongoDb.Import\CsvToMongoDb.Import\CsvToMongoDb.QueryClient.Wpf\bin\Release\net8.0-windows\publish\* -DestinationPath .\$env:App_Packages_Archive  
+        run: Compress-Archive -Path $env:App_Packages_Directory\* -DestinationPath $env:App_Packages_Directory\$env:App_Packages_Archive  
         
         # Create the release:  https://github.com/actions/create-release
       - name: Create release
@@ -136,7 +135,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}  # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: .\${{ env.App_Packages_Archive }}
+          asset_path: ${{ env.App_Packages_Directory }}\${{ env.App_Packages_Archive }}
           asset_name: ${{ env.App_Packages_Archive }}
           asset_content_type: application/zip
      
