@@ -45,6 +45,7 @@ on:
   
 jobs:   
   build:
+    permissions: write-all
     name: Release
    
     strategy:
