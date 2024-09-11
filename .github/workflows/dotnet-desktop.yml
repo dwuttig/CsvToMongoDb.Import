@@ -112,4 +112,11 @@ jobs:
           
       # Publish
       - name: Publish
-        run: dotnet publish 
+        run: dotnet publish
+      - uses: actions/upload-artifact@v4
+
+      - name: Upload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CsvToMongoDb
+          path: CsvToMongoDb.Import/CsvToMongoDb.Import/CsvToMongoDb.Import.Test/bin/Release/net8.0/publish/
