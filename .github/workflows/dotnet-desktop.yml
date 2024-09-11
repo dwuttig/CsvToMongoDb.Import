@@ -96,7 +96,7 @@ jobs:
       Solution_Name: CsvToMongoDb.Import.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
       Test_Project_Path: CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
       App_Packages_Archive: CsvToMongoDb.zip   # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      App_Packages_Directory: CsvToMongoDb.Import\CsvToMongoDb.Import\CsvToMongoDb.QueryClient.Wpf\bin\Release\net8.0-windows\publish    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      App_Packages_Directory: CsvToMongoDb.QueryClient.Wpf\bin\Release\net8.0-windows\publish    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
     
     runs-on: windows-latest
 
