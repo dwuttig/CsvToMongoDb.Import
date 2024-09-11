@@ -51,10 +51,6 @@
             <TextBox Text="{Binding ParameterFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                      DockPanel.Dock="Top">
             </TextBox>
-            <Button DockPanel.Dock="Bottom"
-                    Content="Search"
-                    Command="{Binding SearchCommand}">
-            </Button>
             <ListView Margin="4"
                       ItemsSource="{Binding Parameters.View, Mode=OneWay}"
                       DockPanel.Dock="Top">

@@ -1,5 +1,6 @@
+using System.Collections.ObjectModel;
 using System.Windows.Data;
-using CommunityToolkit.Mvvm.Input;
+using CsvToMongoDb.Import;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.ParameterSearch;
 
@@ -15,7 +16,7 @@ public interface IParameterSearchViewModel
 
     string? ParameterFilter { get; set; }
 
-    AsyncRelayCommand SearchCommand { get; }
+    ObservableCollection<Parameter> Results { get; init; }
 
     Task InitializeAsync();
 }
