@@ -43,21 +43,22 @@ on:
   push:
     tags:
       - '*'
-  
-jobs:   
+
+jobs:
   build:
     permissions: write-all
     name: Release
-   
+    
     strategy:
       matrix:
         targetplatform: [x64]
     
     env:
-      Solution_Name: CsvToMongoDb.Import.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Test_Project_Path: CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      App_Packages_Archive: CsvToMongoDb.zip   # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      App_Packages_Directory: CsvToMongoDb.QueryClient.Wpf\bin\Release\net8.0-windows\publish    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      Solution_Name: CsvToMongoDb.Import.sln
+      Test_Project_Path: CsvToMongoDb.Import.Test\CsvToMongoDb.Import.Test.csproj
+      App_Package_Name: CsvToMongoDb.Client
+      App_Packages_Archive: CsvToMongoDb.zip
+      App_Packages_Directory: CsvToMongoDb.QueryClient.Wpf\bin\Release\net8.0-windows\publish
     
     runs-on: windows-latest
 
@@ -67,14 +68,14 @@ jobs:
 
       # Build
       - name:  Build
-        run: dotnet build 
-          
+        run: dotnet build
+      
       # Publish
       - name: Publish
         run: dotnet publish
-        
+
       - name: Create archive
-        run: Compress-Archive -Path $env:App_Packages_Directory\* -DestinationPath $env:App_Packages_Directory\$env:App_Packages_Archive  
+        run: Compress-Archive -Path $env:App_Packages_Directory\* -DestinationPath $env:App_Packages_Directory\$env:App_Packages_Archive
         
         # Create the release:  https://github.com/actions/create-release
       - name: Create release
@@ -84,10 +85,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ github.ref}}.${{ matrix.targetplatform }}
-          release_name:  ${{ github.ref }}.${{ matrix.targetplatform }}
+          release_name:  ${{App_Package_Name}}-${{ github.ref }}-${{ matrix.targetplatform }}
           draft: false
           prerelease: false
-  
+      
       # Upload release asset:   https://github.com/actions/upload-release-asset
       - name: Update release asset
         id: upload-release-asset
