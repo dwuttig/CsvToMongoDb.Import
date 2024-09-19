@@ -16,6 +16,10 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
         <Menu>
             <MenuItem Header="View">
                 <MenuItem Header="Themes">
@@ -23,9 +27,11 @@
                               Click="ChangeTheme_Click" />
                     <MenuItem Header="Dark"
                               Click="ChangeTheme_Click" />
-                </MenuItem></MenuItem>
+                </MenuItem>
+            </MenuItem>
         </Menu>
-        <TabControl Grid.Row="1">
+        <TabControl Grid.Row="1"
+                    Grid.Column="0">
             <TabItem Header="Machine details">
                 <views:MachineDetailView DataContext="{Binding MachineDetailViewModel}"></views:MachineDetailView>
             </TabItem>
@@ -33,5 +39,8 @@
                 <views:ParameterSearchView DataContext="{Binding ParameterSearchViewModel}"></views:ParameterSearchView>
             </TabItem>
         </TabControl>
+        <views:DefaultParametersView Grid.Row="1"
+                                     Grid.Column="1"
+                                     DataContext="{Binding DefaultParametersViewModel}"></views:DefaultParametersView>
     </Grid>
 </mah:MetroWindow>

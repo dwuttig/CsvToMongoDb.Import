@@ -3,12 +3,14 @@ using System.Windows.Data;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CsvToMongoDb.Import;
+using CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.ParameterSearch;
 
 public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewModel
 {
     private readonly ISearchService _searchService;
+    private readonly IDefaultParametersViewModel _defaultParametersViewModel;
     private readonly IList<ParameterViewModel> _parameters = new List<ParameterViewModel>();
     private bool _isSoftStarter;
     private bool _isDrive;
@@ -68,9 +70,12 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
 
     public ObservableCollection<Parameter> Results { get; init; }
 
-    public ParameterSearchViewModel(ISearchService searchService)
+    public ParameterSearchViewModel(
+        ISearchService searchService,
+        IDefaultParametersViewModel defaultParametersViewModel)
     {
         _searchService = searchService;
+        _defaultParametersViewModel = defaultParametersViewModel;
         Parameters = new CollectionViewSource { Source = _parameters };
         Results = new ObservableCollection<Parameter>();
     }

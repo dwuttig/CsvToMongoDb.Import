@@ -2,7 +2,9 @@
 using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CsvToMongoDb.Import;
+using CsvToMongoDb.QueryClient.Wpf.Configuration;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels;
+using CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels.MachineDetail;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels.ParameterSearch;
 using CsvToMongoDb.QueryClient.Wpf.Views;
@@ -48,6 +50,7 @@ public partial class App : Application
                     new ServiceCollection()
                         .AddLogging(builder => builder.AddLog4Net(Log4NetConfigFile))
                         .AddSingleton<IRepository, Repository>()
+                        .AddSingleton(typeof(IDefaultParameterReader), new DefaultParameterReader(configuration))
                         .AddSingleton<ISearchService, SearchService>()
                         .AddSingleton<IImportService, ImportService>()
                         .AddSingleton<IUserSettingsService, UserSettingsService>()
@@ -56,6 +59,7 @@ public partial class App : Application
                         .AddSingleton(typeof(IMongoDatabase), new MongoClient(connectionString).GetDatabase(databaseName))
                         .AddSingleton<IMachineDetailViewModel, MachineDetailViewModel>()
                         .AddSingleton<IParameterSearchViewModel, ParameterSearchViewModel>()
+                        .AddSingleton<IDefaultParametersViewModel, DefaultParametersViewModel>()
                         .AddSingleton<IShellViewModel, ShellViewModel>()
                         .BuildServiceProvider());
 

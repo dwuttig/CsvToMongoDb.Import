@@ -40,6 +40,9 @@
       <None Update="Resources\CT Snapshot Dev AC 800PEC (11_05_2022).csv">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Resources\CT Snapshot Dev AC 800PEC (07_09_2023).csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>

@@ -56,6 +56,23 @@ public class ImportServiceTests
         // Assert
         results.Count.ShouldBe(1);
     }
+    
+    [Test]
+    public async Task ImportSameBlockIdFiles()
+    {
+        // Arrange
+
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_08_2023).csv");
+        _importService.ImportCsvData("Resources/CT Snapshot Dev AC 800PEC (07_09_2023).csv");
+
+        //Act
+        var results = await _searchService.SearchEverywhereAsync(new[] { "1081" }, "FirmwareVersionLIN7_000").ConfigureAwait(false);
+        var machineIds = await _searchService.GetAllMachineIdsAsync().ConfigureAwait(false);
+
+        // Assert
+        machineIds.Count().ShouldBe(1);
+        results.Count.ShouldBe(1);
+    }
 
     private readonly IImportService _importService = new ImportService(new Repository(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB")));
     private readonly ISearchService _searchService = new SearchService(new Repository(new MongoClient("mongodb://localhost:27017").GetDatabase("testDB")), Mock.Of<ILogger<SearchService>>());

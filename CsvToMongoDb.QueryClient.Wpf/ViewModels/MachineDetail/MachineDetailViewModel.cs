@@ -6,6 +6,8 @@ using System.Windows.Data;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CsvToMongoDb.Import;
+using CsvToMongoDb.QueryClient.Wpf.Configuration;
+using CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.MachineDetail;
 
@@ -13,6 +15,7 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
 {
     private readonly ISearchService _searchService;
     private readonly IImportService _importService;
+    private readonly IDefaultParametersViewModel _defaultParametersViewModel;
     private readonly IList<ParameterViewModel> _parameters = new List<ParameterViewModel>();
     private readonly StringBuilder _importLogBuilder = new StringBuilder();
     private readonly PathConfiguration _pathConfiguration;
@@ -52,10 +55,15 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
         }
     }
 
-    public MachineDetailViewModel(ISearchService searchService, IImportService importService, PathConfiguration pathConfiguration)
+    public MachineDetailViewModel(
+        ISearchService searchService,
+        IImportService importService,
+        IDefaultParametersViewModel defaultParametersViewModel,
+        PathConfiguration pathConfiguration)
     {
         _searchService = searchService;
         _importService = importService;
+        _defaultParametersViewModel = defaultParametersViewModel;
         _pathConfiguration = pathConfiguration;
         Parameters = new CollectionViewSource { Source = _parameters };
         Results = new ObservableCollection<Parameter>();
