@@ -9,7 +9,7 @@ public sealed class DesignDefaultParametersViewModel : IDefaultParametersViewMod
 
     public IList<string> GetSelectedDefaultParameters()
     {
-        throw new NotImplementedException();
+        return Array.Empty<string>();
     }
 
     public DesignDefaultParametersViewModel()
