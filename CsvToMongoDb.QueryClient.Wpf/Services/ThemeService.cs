@@ -1,6 +1,5 @@
 using System.Windows;
 using ControlzEx.Theming;
-using CsvToMongoDb.QueryClient.Wpf.Models;
 
 namespace CsvToMongoDb.QueryClient.Wpf.Services;
 

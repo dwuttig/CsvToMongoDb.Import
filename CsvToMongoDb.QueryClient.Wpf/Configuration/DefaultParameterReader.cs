@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
 namespace CsvToMongoDb.QueryClient.Wpf.Configuration;

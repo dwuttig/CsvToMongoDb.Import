@@ -2,7 +2,7 @@ using CsvToMongoDb.QueryClient.Wpf.Models;
 using CsvToMongoDb.QueryClient.Wpf.Services;
 using Shouldly;
 
-namespace CsvToMongoDb.QueryClient.Wpf.Test;
+namespace CsvToMongoDb.QueryClient.Wpf.Test.Services;
 
 [TestFixture]
 public class UserSettingsServiceTests

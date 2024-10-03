@@ -28,6 +28,6 @@ public sealed class DefaultParameterViewModel : ObservableObject, IDefaultParame
         _key = key;
         Name = name;
         _userSettingsService = userSettingsService;
-        _userSettingsService.GetUserSettings().GetDefaultParametersSelection().TryGetValue(_key, out _isSelected);
+        _isSelected = _userSettingsService.GetUserSettings().GetSelectionStateForParameter(_key);
     }
 }

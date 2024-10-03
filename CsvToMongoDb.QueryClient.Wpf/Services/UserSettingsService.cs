@@ -1,5 +1,3 @@
-using System.IO;
-using System.Xml.Serialization;
 using CsvToMongoDb.QueryClient.Wpf.Models;
 
 namespace CsvToMongoDb.QueryClient.Wpf.Services;

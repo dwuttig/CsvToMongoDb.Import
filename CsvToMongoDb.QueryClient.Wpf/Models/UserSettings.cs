@@ -13,7 +13,7 @@ public class UserSettings
         get => _defaultParametersSelectionWrapper;
         set => _defaultParametersSelectionWrapper = value;
     }
-    
+
     [XmlElement("SelectedTheme")]
     public string SelectedTheme { get; set; }
 
@@ -40,13 +40,24 @@ public class UserSettings
             parameter.IsSelected = isSelected;
         }
     }
+
+    public bool GetSelectionStateForParameter(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            return false;
+        }
+
+        GetDefaultParametersSelection().TryGetValue(key, out var isSelected);
+        return isSelected;
+    }
 }
 
 [XmlRoot("DefaultParametersSelectionWrapper")]
 public class DefaultParametersSelectionWrapper
 {
     public List<Parameter> Parameters { get; set; }
-    
+
     public DefaultParametersSelectionWrapper()
     {
         Parameters = new List<Parameter>();
