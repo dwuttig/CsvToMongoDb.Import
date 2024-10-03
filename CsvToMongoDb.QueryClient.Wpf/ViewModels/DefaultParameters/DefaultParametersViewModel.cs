@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CsvToMongoDb.Import;
 using CsvToMongoDb.QueryClient.Wpf.Configuration;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;

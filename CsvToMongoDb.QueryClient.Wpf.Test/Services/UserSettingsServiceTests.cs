@@ -1,3 +1,4 @@
+using System.IO;
 using CsvToMongoDb.QueryClient.Wpf.Models;
 using CsvToMongoDb.QueryClient.Wpf.Services;
 using Shouldly;
