@@ -3,6 +3,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CsvToMongoDb.Import;
 using CsvToMongoDb.QueryClient.Wpf.Configuration;
+using CsvToMongoDb.QueryClient.Wpf.Infrastructure;
 using CsvToMongoDb.QueryClient.Wpf.Services;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
@@ -51,6 +52,7 @@ public partial class App : Application
                     new ServiceCollection()
                         .AddLogging(builder => builder.AddLog4Net(Log4NetConfigFile))
                         .AddTransient<IRepository, Repository>()
+                        .AddSingleton<IEventAggregator, EventAggregator>()
                         .AddSingleton(typeof(IDefaultParameterReader), new DefaultParameterReader(configuration))
                         .AddTransient<ISearchService, SearchService>()
                         .AddTransient<IImportService, ImportService>()

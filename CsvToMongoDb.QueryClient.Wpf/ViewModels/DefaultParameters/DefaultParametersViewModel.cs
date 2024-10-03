@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CsvToMongoDb.Import;
 using CsvToMongoDb.QueryClient.Wpf.Configuration;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
@@ -26,4 +27,13 @@ public sealed class DefaultParametersViewModel : ObservableObject, IDefaultParam
     }
 
     public ObservableCollection<DefaultParameterGroupViewModel> DefaultParameterGroups { get; } = new ObservableCollection<DefaultParameterGroupViewModel>();
+
+    public IList<string> GetSelectedDefaultParameters()
+    {
+        return DefaultParameterGroups
+            .SelectMany(dp => dp.Parameters)
+            .Where(parameterViewModel => parameterViewModel.IsSelected)
+            .Select(parameterViewModel => parameterViewModel.Key)
+            .ToList();
+    }
 }

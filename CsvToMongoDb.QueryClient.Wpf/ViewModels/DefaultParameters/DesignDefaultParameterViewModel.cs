@@ -6,8 +6,11 @@ public class DesignDefaultParameterViewModel : IDefaultParameterViewModel
 
     public bool IsSelected { get; set; }
 
+    public string Key { get; }
+
     public DesignDefaultParameterViewModel(string name)
     {
         Name = name;
+        Key = name;
     }
 }

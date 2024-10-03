@@ -3,6 +3,7 @@ using System.Windows.Data;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CsvToMongoDb.Import;
+using CsvToMongoDb.QueryClient.Wpf.Infrastructure;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.ParameterSearch;
@@ -11,6 +12,7 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
 {
     private readonly ISearchService _searchService;
     private readonly IDefaultParametersViewModel _defaultParametersViewModel;
+    private readonly IEventAggregator _eventAggregator;
     private readonly IList<ParameterViewModel> _parameters = new List<ParameterViewModel>();
     private bool _isSoftStarter;
     private bool _isDrive;
@@ -72,12 +74,15 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
 
     public ParameterSearchViewModel(
         ISearchService searchService,
-        IDefaultParametersViewModel defaultParametersViewModel)
+        IDefaultParametersViewModel defaultParametersViewModel,
+        IEventAggregator eventAggregator)
     {
         _searchService = searchService;
         _defaultParametersViewModel = defaultParametersViewModel;
+        _eventAggregator = eventAggregator;
         Parameters = new CollectionViewSource { Source = _parameters };
         Results = new ObservableCollection<Parameter>();
+        _eventAggregator.Subscribe<DefaultParameterSelectionChangedEvent>(_=> SearchResultsAsync());
     }
 
     public async Task InitializeAsync()
@@ -130,7 +135,13 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
             machineType.Add(MachineType.GTStarter);
         }
 
-        var results = await _searchService.SearchByTypeAsync(machineType, _parameters.Where(p => p.IsSelected).Select(p => p.Name).ToArray());
+        var parameters = _parameters.Where(p => p.IsSelected)
+            .Select(p => p.Name)
+            .Concat(_defaultParametersViewModel.GetSelectedDefaultParameters())
+            .Distinct()
+            .ToArray();
+        
+        var results = await _searchService.SearchByTypeAsync(machineType, parameters);
 
         Results.Clear();
         foreach (var searchResult in results)

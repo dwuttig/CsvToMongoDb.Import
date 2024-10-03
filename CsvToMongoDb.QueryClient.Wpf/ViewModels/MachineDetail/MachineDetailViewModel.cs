@@ -6,6 +6,7 @@ using System.Windows.Data;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CsvToMongoDb.Import;
+using CsvToMongoDb.QueryClient.Wpf.Infrastructure;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.MachineDetail;
@@ -18,6 +19,7 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
     private readonly IList<ParameterViewModel> _parameters = new List<ParameterViewModel>();
     private readonly StringBuilder _importLogBuilder = new StringBuilder();
     private readonly PathConfiguration _pathConfiguration;
+    private readonly IEventAggregator _eventAggregator;
     private readonly string fileMask = "*.csv";
     private string? _parameterFilter;
     private string? _selectedMachineId;
@@ -58,14 +60,17 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
         ISearchService searchService,
         IImportService importService,
         IDefaultParametersViewModel defaultParametersViewModel,
-        PathConfiguration pathConfiguration)
+        PathConfiguration pathConfiguration,
+        IEventAggregator eventAggregator)
     {
         _searchService = searchService;
         _importService = importService;
         _defaultParametersViewModel = defaultParametersViewModel;
         _pathConfiguration = pathConfiguration;
+        _eventAggregator = eventAggregator;
         Parameters = new CollectionViewSource { Source = _parameters };
         Results = new ObservableCollection<Parameter>();
+        _eventAggregator.Subscribe<DefaultParameterSelectionChangedEvent>(_ => SearchResultsAsync());
     }
 
     public void LogException(string exceptionMessage)
@@ -133,7 +138,13 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
 
     private async Task SearchResultsAsync()
     {
-        var results = await _searchService.SearchEverywhereAsync(new[] { SelectedMachineId }, _parameters.Where(p => p.IsSelected).Select(p => p.Name).ToArray()).ConfigureAwait(true);
+        var parameters = _parameters.Where(p => p.IsSelected)
+            .Select(p => p.Name)
+            .Concat(_defaultParametersViewModel.GetSelectedDefaultParameters())
+            .Distinct()
+            .ToArray();
+
+        var results = await _searchService.SearchEverywhereAsync(new[] { SelectedMachineId }, parameters).ConfigureAwait(true);
 
         Results.Clear();
         foreach (var searchResult in results)
