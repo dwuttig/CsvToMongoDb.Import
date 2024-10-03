@@ -8,10 +8,10 @@ public sealed class DefaultParameterGroupViewModel : ObservableObject
     public DefaultParameterGroupViewModel(string name)
     {
         Name = name;
-        Parameters = new ObservableCollection<DefaultParameterViewModel>();
+        Parameters = new ObservableCollection<IDefaultParameterViewModel>();
     }
 
     public string Name { get; }
 
-    public ObservableCollection<DefaultParameterViewModel> Parameters { get; }
+    public ObservableCollection<IDefaultParameterViewModel> Parameters { get; }
 }

@@ -1,4 +1,4 @@
-namespace CsvToMongoDb.QueryClient.Wpf;
+namespace CsvToMongoDb.QueryClient.Wpf.Services;
 
 public interface IThemeService
 {

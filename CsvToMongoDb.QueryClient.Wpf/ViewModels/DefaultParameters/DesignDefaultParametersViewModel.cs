@@ -9,7 +9,7 @@ public sealed class DesignDefaultParametersViewModel : IDefaultParametersViewMod
     public DesignDefaultParametersViewModel()
     {
         var defaultParameterGroupViewModel = new DefaultParameterGroupViewModel("Test");
-        defaultParameterGroupViewModel.Parameters.Add(new DefaultParameterViewModel("Parameter_Key", "Parameter 1"));
+        defaultParameterGroupViewModel.Parameters.Add(new DesignDefaultParameterViewModel("Parameter_Key"));
         DefaultParameterGroups.Add(defaultParameterGroupViewModel);
     }
 }

@@ -20,10 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Models\"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\CsvToMongoDb.Import\CsvToMongoDb.Import.csproj"/>
     </ItemGroup>
 

@@ -1,13 +1,19 @@
 using System.IO;
 using System.Xml.Serialization;
+using CsvToMongoDb.QueryClient.Wpf.Models;
 
-namespace CsvToMongoDb.QueryClient.Wpf;
+namespace CsvToMongoDb.QueryClient.Wpf.Services;
 
-public class UserSettingsService : IUserSettingsService
+public class UserSettingsFileRepository : IUserSettingsRepository
 {
     private readonly string _filePath;
 
-    public UserSettingsService()
+    public UserSettingsFileRepository(string filePath)
+    {
+        _filePath = filePath;
+    }
+
+    public UserSettingsFileRepository()
     {
         var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         _filePath = Path.Combine(appDataFolder, "usersettings.config");
@@ -20,7 +26,7 @@ public class UserSettingsService : IUserSettingsService
         serializer.Serialize(writer, userSettings);
     }
 
-    public UserSettings LoadUserSettings()
+    public UserSettings GetUserSettings()
     {
         if (!File.Exists(_filePath))
         {
@@ -29,6 +35,7 @@ public class UserSettingsService : IUserSettingsService
 
         var serializer = new XmlSerializer(typeof(UserSettings));
         using var reader = new StreamReader(_filePath);
-        return (UserSettings)serializer.Deserialize(reader);
+        var userSettings = (UserSettings)serializer.Deserialize(reader);
+        return userSettings;
     }
 }

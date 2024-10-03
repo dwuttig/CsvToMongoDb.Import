@@ -6,7 +6,7 @@ namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
 
 public sealed class DefaultParametersViewModel : ObservableObject, IDefaultParametersViewModel
 {
-    public DefaultParametersViewModel(IDefaultParameterReader defaultParameterReader)
+    public DefaultParametersViewModel(IDefaultParameterReader defaultParameterReader, IDefaultParameterViewModelFactory defaultParameterViewModelFactory)
     {
         var defaultParameters = defaultParameterReader.GetDefaultParameters();
         foreach (var defaultParameterGroup in defaultParameters.GetAllDefaultParameterGroups())
@@ -14,10 +14,10 @@ public sealed class DefaultParametersViewModel : ObservableObject, IDefaultParam
             var defaultParameterGroupViewModel = new DefaultParameterGroupViewModel(defaultParameterGroup);
             foreach (var defaultParameter in defaultParameters.GetAllDefaultParameters(defaultParameterGroup))
             {
-                var defaultParameterViewModel = new DefaultParameterViewModel(
+                var defaultParameterViewModel = defaultParameterViewModelFactory.Create(
                     defaultParameter,
                     defaultParameters.GetDefaultParameterName(defaultParameterGroup, defaultParameter));
-                
+
                 defaultParameterGroupViewModel.Parameters.Add(defaultParameterViewModel);
             }
 

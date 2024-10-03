@@ -1,7 +1,8 @@
 using System.Windows;
 using ControlzEx.Theming;
+using CsvToMongoDb.QueryClient.Wpf.Models;
 
-namespace CsvToMongoDb.QueryClient.Wpf;
+namespace CsvToMongoDb.QueryClient.Wpf.Services;
 
 public class ThemeService : IThemeService
 {
@@ -14,7 +15,7 @@ public class ThemeService : IThemeService
 
     public void ChangeTheme(string theme)
     {
-        _userSettingsService.SaveUserSettings(new UserSettings(theme));
+        _userSettingsService.UpdateUserSettings(settings => settings.SelectedTheme = theme);
         switch (theme)
         {
             case "Light":

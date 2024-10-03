@@ -3,6 +3,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CsvToMongoDb.Import;
 using CsvToMongoDb.QueryClient.Wpf.Configuration;
+using CsvToMongoDb.QueryClient.Wpf.Services;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels.MachineDetail;
@@ -49,17 +50,19 @@ public partial class App : Application
                 Ioc.Default.ConfigureServices(
                     new ServiceCollection()
                         .AddLogging(builder => builder.AddLog4Net(Log4NetConfigFile))
-                        .AddSingleton<IRepository, Repository>()
+                        .AddTransient<IRepository, Repository>()
                         .AddSingleton(typeof(IDefaultParameterReader), new DefaultParameterReader(configuration))
-                        .AddSingleton<ISearchService, SearchService>()
-                        .AddSingleton<IImportService, ImportService>()
-                        .AddSingleton<IUserSettingsService, UserSettingsService>()
-                        .AddSingleton<IThemeService, ThemeService>()
+                        .AddTransient<ISearchService, SearchService>()
+                        .AddTransient<IImportService, ImportService>()
+                        .AddTransient<IUserSettingsRepository, UserSettingsFileRepository>()
+                        .AddTransient<IUserSettingsService, UserSettingsService>()
+                        .AddTransient<IThemeService, ThemeService>()
                         .AddSingleton(typeof(PathConfiguration), new PathConfiguration(watchPath, tempPath, archivePath))
                         .AddSingleton(typeof(IMongoDatabase), new MongoClient(connectionString).GetDatabase(databaseName))
                         .AddSingleton<IMachineDetailViewModel, MachineDetailViewModel>()
                         .AddSingleton<IParameterSearchViewModel, ParameterSearchViewModel>()
                         .AddSingleton<IDefaultParametersViewModel, DefaultParametersViewModel>()
+                        .AddSingleton<IDefaultParameterViewModelFactory, DefaultParameterViewModelFactory>()
                         .AddSingleton<IShellViewModel, ShellViewModel>()
                         .BuildServiceProvider());
 
@@ -84,7 +87,7 @@ public partial class App : Application
         var userSettingsService = Ioc.Default.GetRequiredService<IUserSettingsService>() ?? throw new InvalidOperationException("IUserSettingsService service not found.");
         var themeService = Ioc.Default.GetRequiredService<IThemeService>() ?? throw new InvalidOperationException("IThemeService service not found.");
 
-        var userSettings = userSettingsService.LoadUserSettings();
+        var userSettings = userSettingsService.GetUserSettings();
         themeService.ChangeTheme(userSettings.SelectedTheme);
     }
 }
