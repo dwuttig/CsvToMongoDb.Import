@@ -52,6 +52,18 @@ The `appsettings.json` file in your project should be configured as follows:
       "Microsoft": "Information"
     }
   },
+  "DefaultParameters": {
+    "Line side": { // Group name
+      "CommutationReactance_200": "CLSComReac", // Parameter name csv to UI name mapping
+      "OverlapMaskTime_500 (CLS)": "CLSOverlMaskTime"
+    },
+    "DC": {
+      "KpPulseMode_405": "DCCurPulse Kp",
+      "TiPulseMode_405": "DCCurPulse Ti",
+      "Kp_405": "DCCurLCI Kp",
+      "Ti_405": "DCCurLCI Ti"
+    }
+  },
   "MongoDbConnectionString": "mongodb://localhost:27017",
   "MongoDbDatabase": "your_database_name",
   "WatchPath": "your_watch_path",
