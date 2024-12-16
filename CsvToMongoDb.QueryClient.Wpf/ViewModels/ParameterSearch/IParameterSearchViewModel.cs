@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Windows.Data;
+using CommunityToolkit.Mvvm.Input;
 using CsvToMongoDb.Import;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.ParameterSearch;
@@ -13,6 +14,10 @@ public interface IParameterSearchViewModel
     bool IsGtStarter { get; set; }
 
     CollectionViewSource Parameters { get; init; }
+    
+    CollectionViewSource SelectedParameters { get; }
+    
+    RelayCommand DeselectAllCommand { get; }
 
     string? ParameterFilter { get; set; }
 

@@ -40,28 +40,72 @@
             <TextBox Text="{Binding ParameterFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                      DockPanel.Dock="Top">
             </TextBox>
-            <ListView ItemsSource="{Binding Parameters.View, Mode=OneWay}"
-                      DockPanel.Dock="Top">
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel IsVirtualizing="True" />
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
-                <ListView.Resources>
-                    <DataTemplate DataType="{x:Type viewModels:ParameterViewModel}">
-                        <CheckBox Content="{Binding Name, Mode=OneWay}"
-                                  IsChecked="{Binding IsSelected, Mode=TwoWay}">
-                        </CheckBox>
-                    </DataTemplate>
-                </ListView.Resources>
-                <ListView.Template>
-                    <ControlTemplate>
-                        <ScrollViewer CanContentScroll="True">
-                            <ItemsPresenter />
-                        </ScrollViewer>
-                    </ControlTemplate>
-                </ListView.Template>
-            </ListView>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="5"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Content="All Parameters:"
+                       DockPanel.Dock="Top">
+                </Label>
+                <ListView Grid.Row="1"
+                          ItemsSource="{Binding Parameters.View, Mode=OneWay}"
+                          DockPanel.Dock="Top">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel IsVirtualizing="True" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.Resources>
+                        <DataTemplate DataType="{x:Type viewModels:ParameterViewModel}">
+                            <CheckBox Content="{Binding Name, Mode=OneWay}"
+                                      IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                            </CheckBox>
+                        </DataTemplate>
+                    </ListView.Resources>
+                    <ListView.Template>
+                        <ControlTemplate>
+                            <ScrollViewer CanContentScroll="True">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ListView.Template>
+                </ListView>
+                <Separator Grid.Row="2"></Separator>
+                <DockPanel Grid.Row="3" Margin="0 4">
+                    <Button Content="Deselect all" Command="{Binding DeselectAllCommand}" DockPanel.Dock="Right"></Button>
+                    <Label
+                           Content="Selected Parameters:"
+                           DockPanel.Dock="Top">
+                    </Label>
+                </DockPanel>
+                <ListView Grid.Row="4"
+                          ItemsSource="{Binding SelectedParameters.View, Mode=OneWay}"
+                          DockPanel.Dock="Top">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel IsVirtualizing="True" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.Resources>
+                        <DataTemplate DataType="{x:Type viewModels:ParameterViewModel}">
+                            <CheckBox Content="{Binding Name, Mode=OneWay}"
+                                      IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                            </CheckBox>
+                        </DataTemplate>
+                    </ListView.Resources>
+                    <ListView.Template>
+                        <ControlTemplate>
+                            <ScrollViewer CanContentScroll="True">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ListView.Template>
+                </ListView>
+            </Grid>
         </DockPanel>
         <GridSplitter Grid.Row="1"
                       Grid.Column="1"

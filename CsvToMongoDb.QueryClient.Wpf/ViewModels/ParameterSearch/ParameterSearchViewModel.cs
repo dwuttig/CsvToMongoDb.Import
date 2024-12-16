@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CsvToMongoDb.Import;
 using CsvToMongoDb.QueryClient.Wpf.Infrastructure;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
@@ -14,9 +15,9 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
     private readonly IDefaultParametersViewModel _defaultParametersViewModel;
     private readonly IEventAggregator _eventAggregator;
     private readonly IList<ParameterViewModel> _parameters = new List<ParameterViewModel>();
-    private bool _isSoftStarter;
-    private bool _isDrive;
-    private bool _isGtStarter;
+    private bool _isSoftStarter = true;
+    private bool _isDrive = true;
+    private bool _isGtStarter = true;
     private string? _parameterFilter;
 
     public bool IsDrive
@@ -56,6 +57,8 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
         }
     }
 
+    public RelayCommand DeselectAllCommand { get; }
+
     public string? ParameterFilter
     {
         get => _parameterFilter;
@@ -69,6 +72,7 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
     }
 
     public CollectionViewSource Parameters { get; init; }
+    public CollectionViewSource SelectedParameters { get; init; }
 
     public ObservableCollection<Parameter> Results { get; init; }
 
@@ -81,8 +85,10 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
         _defaultParametersViewModel = defaultParametersViewModel;
         _eventAggregator = eventAggregator;
         Parameters = new CollectionViewSource { Source = _parameters };
+        SelectedParameters = new CollectionViewSource { Source = _parameters };
         Results = new ObservableCollection<Parameter>();
-        _eventAggregator.Subscribe<DefaultParameterSelectionChangedEvent>(_=> SearchResultsAsync());
+        _eventAggregator.Subscribe<DefaultParameterSelectionChangedEvent>(_ => SearchResultsAsync());
+        DeselectAllCommand = new RelayCommand(DeselectAll);
     }
 
     public async Task InitializeAsync()
@@ -98,6 +104,19 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
 
         Parameters.Filter += FilterParameters;
         Parameters.View.Refresh();
+        
+        SelectedParameters.Filter += FilterSelectedParameters;
+        SelectedParameters.View.Refresh();
+    }
+    
+    private void DeselectAll()
+    {
+        foreach (var parameterViewModel in _parameters.Where(p=>p.IsSelected))
+        {
+            parameterViewModel.IsSelected = false;
+        }
+        Parameters.View.Refresh();
+        SelectedParameters.View.Refresh();
     }
 
     private void FilterParameters(object obj, FilterEventArgs e)
@@ -116,9 +135,21 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
 
         e.Accepted = false;
     }
+    
+    private static void FilterSelectedParameters(object obj, FilterEventArgs e)
+    {
+        if (e.Item is ParameterViewModel parameterViewModel)
+        {
+            e.Accepted = parameterViewModel.IsSelected;
+            return;
+        }
+
+        e.Accepted = false;
+    }
 
     private async Task SearchResultsAsync()
     {
+        SelectedParameters.View.Refresh();
         IList<MachineType> machineType = new List<MachineType>();
         if (IsSoftStarter)
         {
@@ -140,7 +171,7 @@ public class ParameterSearchViewModel : ObservableObject, IParameterSearchViewMo
             .Concat(_defaultParametersViewModel.GetSelectedDefaultParameters())
             .Distinct()
             .ToArray();
-        
+
         var results = await _searchService.SearchByTypeAsync(machineType, parameters);
 
         Results.Clear();

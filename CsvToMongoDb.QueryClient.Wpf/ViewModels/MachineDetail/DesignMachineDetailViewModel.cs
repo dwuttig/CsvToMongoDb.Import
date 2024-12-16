@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Windows.Data;
+using CommunityToolkit.Mvvm.Input;
 using CsvToMongoDb.Import;
 
 namespace CsvToMongoDb.QueryClient.Wpf.ViewModels.MachineDetail;
@@ -9,6 +10,10 @@ public class DesignMachineDetailViewModel : IMachineDetailViewModel
     public ObservableCollection<string> MachineIds { get; set; } = new ObservableCollection<string>();
 
     public CollectionViewSource Parameters { get; } = new CollectionViewSource();
+    
+    public CollectionViewSource SelectedParameters { get; } = new CollectionViewSource();
+
+    public RelayCommand DeselectAllCommand { get; }
 
     public ObservableCollection<Parameter> Results { get; init; } = new ObservableCollection<Parameter>();
 

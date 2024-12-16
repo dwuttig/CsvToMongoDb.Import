@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Data;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CsvToMongoDb.Import;
 using CsvToMongoDb.QueryClient.Wpf.Infrastructure;
 using CsvToMongoDb.QueryClient.Wpf.ViewModels.DefaultParameters;
@@ -41,6 +42,10 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
     }
 
     public CollectionViewSource Parameters { get; init; }
+    
+    public CollectionViewSource SelectedParameters { get; init; }
+
+    public RelayCommand DeselectAllCommand { get; }
 
     public ObservableCollection<Parameter> Results { get; init; }
 
@@ -69,8 +74,20 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
         _pathConfiguration = pathConfiguration;
         _eventAggregator = eventAggregator;
         Parameters = new CollectionViewSource { Source = _parameters };
+        SelectedParameters = new CollectionViewSource { Source = _parameters };
         Results = new ObservableCollection<Parameter>();
         _eventAggregator.Subscribe<DefaultParameterSelectionChangedEvent>(_ => SearchResultsAsync());
+        DeselectAllCommand = new RelayCommand(DeselectAll);
+    }
+
+    private void DeselectAll()
+    {
+        foreach (var parameterViewModel in _parameters.Where(p=>p.IsSelected))
+        {
+            parameterViewModel.IsSelected = false;
+        }
+        Parameters.View.Refresh();
+        SelectedParameters.View.Refresh();
     }
 
     public void LogException(string exceptionMessage)
@@ -97,6 +114,9 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
 
         Parameters.Filter += FilterParameters;
         Parameters.View.Refresh();
+        
+        SelectedParameters.Filter += FilterSelectedParameters;
+        SelectedParameters.View.Refresh();
         foreach (var file in Directory.GetFiles(_pathConfiguration.WatchPath, fileMask))
         {
             var stopwatch = Stopwatch.StartNew();
@@ -127,6 +147,17 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
 
         e.Accepted = false;
     }
+    
+    private static void FilterSelectedParameters(object obj, FilterEventArgs e)
+    {
+        if (e.Item is ParameterViewModel parameterViewModel)
+        {
+            e.Accepted = parameterViewModel.IsSelected;
+            return;
+        }
+
+        e.Accepted = false;
+    }
 
     private string ImportFile(string file)
     {
@@ -138,6 +169,8 @@ public class MachineDetailViewModel : ObservableObject, IMachineDetailViewModel
 
     private async Task SearchResultsAsync()
     {
+        SelectedParameters.View.Refresh();
+        
         var parameters = _parameters.Where(p => p.IsSelected)
             .Select(p => p.Name)
             .Concat(_defaultParametersViewModel.GetSelectedDefaultParameters())

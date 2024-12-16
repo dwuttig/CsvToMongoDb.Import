@@ -14,6 +14,9 @@ public class DesignParameterSearchViewModel : IParameterSearchViewModel
     public bool IsGtStarter { get; set; }
 
     public CollectionViewSource Parameters { get; init; } = new CollectionViewSource();
+    public CollectionViewSource SelectedParameters { get; init; } = new CollectionViewSource();
+
+    public RelayCommand DeselectAllCommand { get; }
 
     public string? ParameterFilter { get; set; }
     
